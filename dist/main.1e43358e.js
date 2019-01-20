@@ -150,10 +150,7 @@ function () {
   }], [{
     key: "storeState",
     value: function storeState(data) {
-      // console.log(data);
-      console.log(AbstractModel.store);
       AbstractModel.store.push(data);
-      console.log(AbstractModel.store);
       localStorage.setItem("_todos", JSON.stringify(AbstractModel.store));
     }
   }, {
@@ -358,7 +355,114 @@ function () {
 }();
 
 exports.default = UI;
-},{"../models/Todo":"src/models/Todo.js"}],"src/utils/actions.js":[function(require,module,exports) {
+},{"../models/Todo":"src/models/Todo.js"}],"src/utils/Validation.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Validation =
+/*#__PURE__*/
+function () {
+  function Validation() {
+    _classCallCheck(this, Validation);
+
+    this._errors = [];
+  } // getErrors()
+  // {
+  //     return this._errors;
+  // }
+
+
+  _createClass(Validation, [{
+    key: "setErrors",
+    value: function setErrors(msg) {
+      this._errors.push(msg);
+    }
+  }, {
+    key: "validate",
+    value: function validate(rules, data) {
+      var validation = new Validation();
+      var _errors = null;
+      var valid = true;
+      rules.forEach(function (rule, index) {
+        var callbacks = rule.title.split('|');
+        callbacks.forEach(function (callback) {
+          var value = data[index] ? data[index] : null;
+          var fieldName = Object.keys(data[0])[0];
+
+          if (validation[callback](value, fieldName) === false) {
+            valid = false;
+          }
+        });
+      });
+
+      if (valid === false) {
+        _errors = validation._errors;
+        this.setErrors(_errors);
+      }
+
+      return valid;
+    }
+  }, {
+    key: "min",
+    value: function min() {
+      var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var fieldName = arguments.length > 1 ? arguments[1] : undefined;
+      var valid = null;
+
+      if (this.lessThan(value._name) === true) {
+        valid = false;
+        this.setErrors("".concat(fieldName, " must be more than 5 characters."));
+      } else {
+        valid = true;
+      }
+
+      return valid;
+    }
+  }, {
+    key: "required",
+    value: function required() {
+      var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var fieldName = arguments.length > 1 ? arguments[1] : undefined;
+      var valid = null;
+
+      if (this.empty(value._name) === true) {
+        valid = false;
+        this.setErrors("".concat(fieldName, " is reqired"));
+      } else {
+        valid = true;
+      }
+
+      return valid;
+    }
+  }, {
+    key: "empty",
+    value: function empty() {
+      var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      return field === null || field.trim().length === 0 ? true : false;
+    }
+  }, {
+    key: "lessThan",
+    value: function lessThan() {
+      var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      return field.length <= 5 ? true : false;
+    }
+  }]);
+
+  return Validation;
+}();
+
+exports.default = Validation;
+},{}],"src/utils/actions.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -370,25 +474,39 @@ var _Todo = _interopRequireDefault(require("../models/Todo"));
 
 var _UI = _interopRequireDefault(require("../components/UI"));
 
+var _Validation = _interopRequireDefault(require("../utils/Validation"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var handleBtnClick = function handleBtnClick() {
   var btn = document.getElementById("btn");
   btn.addEventListener("click", function () {
+    var rules = [{
+      title: 'required|min'
+    }];
+
     var _input = document.getElementById("new-todo");
 
+    var _name = _input.name;
     var newTodo = _input.value;
-    var todo = new _Todo.default(newTodo);
-    todo.save();
+    var validation = new _Validation.default();
 
-    _UI.default.showTodo(todo);
+    if (validation.validate(rules, [{
+      _name: newTodo
+    }]) === true) {
+      var todo = new _Todo.default(newTodo); // todo.save();
+      // UI.showTodo(todo);
 
-    _input.value = "";
+      _input.value = "";
+      console.log('we good!');
+    } else {
+      console.log(validation._errors);
+    }
   });
 };
 
 exports.handleBtnClick = handleBtnClick;
-},{"../models/Todo":"src/models/Todo.js","../components/UI":"src/components/UI.js"}],"src/main.js":[function(require,module,exports) {
+},{"../models/Todo":"src/models/Todo.js","../components/UI":"src/components/UI.js","../utils/Validation":"src/utils/Validation.js"}],"src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _UI = _interopRequireDefault(require("./components/UI"));
@@ -431,7 +549,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49318" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55065" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

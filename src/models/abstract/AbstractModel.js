@@ -8,10 +8,7 @@ export default class AbstractModel {
 
     static storeState(data) 
     {
-        // console.log(data);
-        console.log(AbstractModel.store);
         AbstractModel.store.push(data);
-        console.log(AbstractModel.store);
         localStorage.setItem("_todos", JSON.stringify(AbstractModel.store));
     }
 

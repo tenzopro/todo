@@ -40,9 +40,27 @@ export default class UI
 		// create a UL & LI elements
 	    const ul = document.createElement("ul");
 		const li = document.createElement("li");
+		const input = document.createElement("input"); 
+		const btn1 = document.createElement("button"); 
+		const btn2 = document.createElement("button"); 
 
-		// append todo title text in between li tags
+		// add attributes
+		input.setAttribute('type', 'checkbox'); 
+		input.setAttribute('id', 'checkbox');
+
+		btn1.setAttribute('id', todo.id); 
+		btn1.setAttribute('id', 'btn1');
+		btn1.innerHTML = "Edit";
+
+		btn2.setAttribute('id', todo.id); 
+		btn2.setAttribute('id', 'btn2');
+		btn2.innerHTML = "Delete";
+		
+		// append children to li tag
 		li.innerHTML = todo.title;
+		li.appendChild(input);
+		li.appendChild(btn1);
+		li.appendChild(btn2);
 
 		// then append the li to ul tag
 		ul.appendChild(li);

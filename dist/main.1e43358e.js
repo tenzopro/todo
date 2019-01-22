@@ -135,7 +135,6 @@ function () {
     var data = JSON.parse(localStorage.getItem("_todos"));
     this.todos = data ? data : [];
     this.title = title;
-    console.log(this.todos);
   }
 
   _createClass(Model, [{
@@ -256,9 +255,7 @@ function (_Model) {
 
     _classCallCheck(this, Todo);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Todo).call(this, title)); // this.id = Math.floor(Math.random() * 100);
-    // this.title = title;
-    // this.completed = false;
+    return _possibleConstructorReturn(this, _getPrototypeOf(Todo).call(this, title));
   }
 
   return Todo;
@@ -327,9 +324,24 @@ function () {
       var appHook = document.getElementById("app"); // create a UL & LI elements
 
       var ul = document.createElement("ul");
-      var li = document.createElement("li"); // append todo title text in between li tags
+      var li = document.createElement("li");
+      var input = document.createElement("input");
+      var btn1 = document.createElement("button");
+      var btn2 = document.createElement("button"); // add attributes
 
-      li.innerHTML = todo.title; // then append the li to ul tag
+      input.setAttribute('type', 'checkbox');
+      input.setAttribute('id', 'checkbox');
+      btn1.setAttribute('id', todo.id);
+      btn1.setAttribute('id', 'btn1');
+      btn1.innerHTML = "Edit";
+      btn2.setAttribute('id', todo.id);
+      btn2.setAttribute('id', 'btn2');
+      btn2.innerHTML = "Delete"; // append children to li tag
+
+      li.innerHTML = todo.title;
+      li.appendChild(input);
+      li.appendChild(btn1);
+      li.appendChild(btn2); // then append the li to ul tag
 
       ul.appendChild(li); // finally append the ul tag to the appHook
 
@@ -700,7 +712,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49345" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63528" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

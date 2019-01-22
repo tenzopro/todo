@@ -6,7 +6,6 @@ export default class Model
         let data = JSON.parse(localStorage.getItem("_todos"));
         this.todos =  (data) ? data : [];
         this.title = title;
-        console.log(this.todos);
     }
 
     storeState() 

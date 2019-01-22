@@ -19,8 +19,8 @@ const handleBtnClick = () => {
         if(Validation.validate(rules, [{ _name: newTodo }])===true)
         {
             const todo = new Todo(newTodo);
-            // todo.save();
-            // UI.showTodo(todo);
+            todo.save();
+            UI.showTodo(todo);
             _input.value = "";
             console.log('we good!');
         } else {

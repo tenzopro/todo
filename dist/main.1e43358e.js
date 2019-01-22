@@ -542,8 +542,10 @@ var handleBtnClick = function handleBtnClick() {
     if (_Validation.default.validate(rules, [{
       _name: newTodo
     }]) === true) {
-      var todo = new _Todo.default(newTodo); // todo.save();
-      // UI.showTodo(todo);
+      var todo = new _Todo.default(newTodo);
+      todo.save();
+
+      _UI.default.showTodo(todo);
 
       _input.value = "";
       console.log('we good!');

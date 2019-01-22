@@ -355,7 +355,7 @@ function () {
 }();
 
 exports.default = UI;
-},{"../models/Todo":"src/models/Todo.js"}],"src/utils/Validation.js":[function(require,module,exports) {
+},{"../models/Todo":"src/models/Todo.js"}],"src/utils/Errors.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -369,29 +369,60 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+var Errors =
+/*#__PURE__*/
+function () {
+  function Errors() {
+    _classCallCheck(this, Errors);
+
+    Errors.errors = [];
+  }
+
+  _createClass(Errors, null, [{
+    key: "get",
+    value: function get() {
+      return Errors.errors;
+    }
+  }, {
+    key: "set",
+    value: function set() {
+      var errMsg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      Errors.errors.push(errMsg);
+    }
+  }]);
+
+  return Errors;
+}();
+
+exports.default = Errors;
+},{}],"src/utils/Validation.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _Errors = _interopRequireDefault(require("./Errors"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 var Validation =
 /*#__PURE__*/
 function () {
   function Validation() {
     _classCallCheck(this, Validation);
+  }
 
-    this._errors = [];
-  } // getErrors()
-  // {
-  //     return this._errors;
-  // }
-
-
-  _createClass(Validation, [{
-    key: "setErrors",
-    value: function setErrors(msg) {
-      this._errors.push(msg);
-    }
-  }, {
+  _createClass(Validation, null, [{
     key: "validate",
     value: function validate(rules, data) {
-      var validation = new Validation();
-      var _errors = null;
       var valid = true;
       rules.forEach(function (rule, index) {
         var callbacks = rule.title.split('|');
@@ -399,17 +430,11 @@ function () {
           var value = data[index] ? data[index] : null;
           var fieldName = Object.keys(data[0])[0];
 
-          if (validation[callback](value, fieldName) === false) {
+          if (Validation[callback](value, fieldName) === false) {
             valid = false;
           }
         });
       });
-
-      if (valid === false) {
-        _errors = validation._errors;
-        this.setErrors(_errors);
-      }
-
       return valid;
     }
   }, {
@@ -419,9 +444,10 @@ function () {
       var fieldName = arguments.length > 1 ? arguments[1] : undefined;
       var valid = null;
 
-      if (this.lessThan(value._name) === true) {
+      if (Validation.lessThan(value._name) === true) {
         valid = false;
-        this.setErrors("".concat(fieldName, " must be more than 5 characters."));
+
+        _Errors.default.set("".concat(fieldName, " must be more than 5 characters."));
       } else {
         valid = true;
       }
@@ -435,9 +461,10 @@ function () {
       var fieldName = arguments.length > 1 ? arguments[1] : undefined;
       var valid = null;
 
-      if (this.empty(value._name) === true) {
+      if (Validation.empty(value._name) === true) {
         valid = false;
-        this.setErrors("".concat(fieldName, " is reqired"));
+
+        _Errors.default.set("".concat(fieldName, " is reqired"));
       } else {
         valid = true;
       }
@@ -462,7 +489,7 @@ function () {
 }();
 
 exports.default = Validation;
-},{}],"src/utils/actions.js":[function(require,module,exports) {
+},{"./Errors":"src/utils/Errors.js"}],"src/utils/actions.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -475,6 +502,8 @@ var _Todo = _interopRequireDefault(require("../models/Todo"));
 var _UI = _interopRequireDefault(require("../components/UI"));
 
 var _Validation = _interopRequireDefault(require("../utils/Validation"));
+
+var _Errors = _interopRequireDefault(require("./Errors"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -489,9 +518,9 @@ var handleBtnClick = function handleBtnClick() {
 
     var _name = _input.name;
     var newTodo = _input.value;
-    var validation = new _Validation.default();
+    new _Errors.default();
 
-    if (validation.validate(rules, [{
+    if (_Validation.default.validate(rules, [{
       _name: newTodo
     }]) === true) {
       var todo = new _Todo.default(newTodo); // todo.save();
@@ -500,13 +529,13 @@ var handleBtnClick = function handleBtnClick() {
       _input.value = "";
       console.log('we good!');
     } else {
-      console.log(validation._errors);
+      console.log(_Errors.default.errors);
     }
   });
 };
 
 exports.handleBtnClick = handleBtnClick;
-},{"../models/Todo":"src/models/Todo.js","../components/UI":"src/components/UI.js","../utils/Validation":"src/utils/Validation.js"}],"src/main.js":[function(require,module,exports) {
+},{"../models/Todo":"src/models/Todo.js","../components/UI":"src/components/UI.js","../utils/Validation":"src/utils/Validation.js","./Errors":"src/utils/Errors.js"}],"src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _UI = _interopRequireDefault(require("./components/UI"));
@@ -549,7 +578,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55065" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49345" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

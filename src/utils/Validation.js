@@ -1,23 +1,10 @@
+import Errors from './Errors';
+
 export default class Validation 
 {
-    constructor(){
-        this._errors = [];
-    }
 
-    // getErrors()
-    // {
-    //     return this._errors;
-    // }
-
-    setErrors(msg)
+    static validate(rules, data) 
     {
-        this._errors.push(msg);
-    }
-
-    validate(rules, data) 
-    {
-        const validation = new Validation();
-        let _errors = null;
         let valid = true;
 
         rules.forEach((rule, index) => {
@@ -30,7 +17,7 @@ export default class Validation
 
                 let fieldName = Object.keys(data[0])[0];
 
-                if(validation[callback](value, fieldName) === false) 
+                if(Validation[callback](value, fieldName) === false) 
                 { 
                     valid = false
                 }
@@ -38,22 +25,17 @@ export default class Validation
             });
         });
 
-        if(valid===false) { 
-            _errors = validation._errors;
-            this.setErrors(_errors); 
-        }
-
         return valid;
     }
 
-    min(value=null, fieldName)
+    static min(value=null, fieldName)
     {
         let valid = null;
 
-        if(this.lessThan(value._name) === true) 
+        if(Validation.lessThan(value._name) === true) 
         {
             valid = false;
-            this.setErrors(`${fieldName} must be more than 5 characters.`);
+            Errors.set(`${fieldName} must be more than 5 characters.`);
         }  
         else {
             valid = true;
@@ -62,14 +44,14 @@ export default class Validation
         return valid;
     }
 
-    required(value=null, fieldName)
+    static required(value=null, fieldName)
     {
         let valid = null;
 
-        if(this.empty(value._name) ===true) 
+        if(Validation.empty(value._name) ===true) 
         {
             valid = false;
-            this.setErrors(`${fieldName} is reqired`);
+            Errors.set(`${fieldName} is reqired`);
         } else {
             valid = true;
         }
@@ -77,12 +59,12 @@ export default class Validation
         return valid;
     }
 
-    empty(field=null)
+    static empty(field=null)
     {
         return (field ===null || field.trim().length===0) ? true : false;
     }
 
-    lessThan(field=null)
+    static lessThan(field=null)
     {
         return (field.length <= 5) ? true : false;
     }

@@ -1,6 +1,6 @@
 import Todo from '../models/Todo';
 import UI from '../components/UI';
-import Validation from '../utils/Validation';
+import Validation from './Validation';
 import Errors from './Errors';
 
 /**
@@ -9,9 +9,9 @@ import Errors from './Errors';
  * collect form input, and delegate validation
  *  delegate todo persistence
  */
-const handleBtnClick = () => {
+const HandleBtnClick = () => {
 
-    // query but tag
+    // query button tag
     const btn = document.getElementById("btn");
 
     // add event to button tag
@@ -53,4 +53,4 @@ const handleBtnClick = () => {
     });
 };
 
-export { handleBtnClick };
+export { HandleBtnClick };

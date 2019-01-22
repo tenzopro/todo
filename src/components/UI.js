@@ -10,8 +10,11 @@ export default class UI
 	// display todos from Todo model
     static showTodos() 
     {
+		// initize todos
+		const todos = new Todo();
+		
 		// parse json from todo model
-		UI.state = JSON.parse(Todo.all());
+		UI.state = JSON.parse(todos.all());
 
 		// iterate through each todo and delegate DOM manipulation to showTodo()
 		UI.state.map(todo => UI.showTodo(todo));

@@ -132,52 +132,40 @@ function () {
   function AbstractModel() {
     _classCallCheck(this, AbstractModel);
 
-    AbstractModel.store = JSON.parse(localStorage.getItem("_todos")) || "[]";
+    var data = localStorage.getItem("_todos");
+    this.store = data ? data : [];
   }
 
   _createClass(AbstractModel, [{
-    key: "deleteTodo",
-    value: function deleteTodo(id) {
-      if (id === null) {
-        return console.log("Remove function expects exactly 1 arg. 0 passed");
-      }
-
-      this.store = AbstractModel.store.filter(function (todo) {
-        return todo.id !== id;
-      });
-      return true;
-    }
-  }], [{
     key: "storeState",
     value: function storeState(data) {
-      AbstractModel.store.push(data);
-      localStorage.setItem("_todos", JSON.stringify(AbstractModel.store));
+      this.store.push(data);
+      localStorage.setItem("_todos", JSON.stringify(this.store));
     }
   }, {
     key: "setStore",
     value: function setStore(data) {
-      // console.log(data);
-      AbstractModel.storeState(data);
+      this.storeState(data);
     }
   }, {
-    key: "getTodos",
-    value: function getTodos() {
+    key: "all",
+    value: function all() {
       return localStorage.getItem("_todos");
     }
   }, {
-    key: "getTodo",
-    value: function getTodo(id) {
+    key: "get",
+    value: function get(id) {
       if (id === null) {
         return console.log("function expects exactly 1 arg. 0 passed");
       }
 
-      return AbstractModel.store.filter(function (item) {
+      return this.store.filter(function (item) {
         return item.id === id;
       });
     }
   }, {
-    key: "editTodo",
-    value: function editTodo() {
+    key: "edit",
+    value: function edit() {
       var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var title = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
@@ -185,7 +173,7 @@ function () {
         return console.log("Update function expects exactly 1 arg. 0 passed");
       }
 
-      var todo = AbstractModel.store.filter(function (item) {
+      var todo = this.store.filter(function (item) {
         return item.id === id;
       });
 
@@ -199,10 +187,20 @@ function () {
       return console.log('Cannot find todo');
     }
   }, {
-    key: "addTodo",
-    value: function addTodo(data) {
-      // console.log(data);
-      AbstractModel.setStore(data);
+    key: "save",
+    value: function save() {
+      return this;
+    }
+  }, {
+    key: "delete",
+    value: function _delete(id) {
+      if (id === null) {
+        return console.log("Remove function expects exactly 1 arg. 0 passed");
+      }
+
+      this.store = this.store.filter(function (todo) {
+        return todo.id !== id;
+      });
       return true;
     }
   }]);
@@ -226,10 +224,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
@@ -263,47 +257,6 @@ function (_AbstractModel) {
     _this.completed = false;
     return _this;
   }
-
-  _createClass(Todo, [{
-    key: "save",
-    value: function save() {
-      if (this.title === null) {
-        return console.log("cannot pass empty model title");
-      }
-
-      var data = {
-        id: this.id,
-        title: this.title,
-        completed: this.completed
-      };
-
-      _AbstractModel2.default.addTodo(data);
-
-      return this;
-    }
-  }], [{
-    key: "get",
-    value: function get() {
-      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      return _AbstractModel2.default.getTodo(id);
-    }
-  }, {
-    key: "all",
-    value: function all() {
-      return _AbstractModel2.default.getTodos();
-    }
-  }, {
-    key: "update",
-    value: function update(id, title) {
-      return _AbstractModel2.default.editTodo(id, title);
-    }
-  }, {
-    key: "remove",
-    value: function remove() {
-      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      return _AbstractModel2.default.deleteTodo(id);
-    }
-  }]);
 
   return Todo;
 }(_AbstractModel2.default);
@@ -343,8 +296,10 @@ function () {
     key: "showTodos",
     // display todos from Todo model
     value: function showTodos() {
-      // parse json from todo model
-      UI.state = JSON.parse(_Todo.default.all()); // iterate through each todo and delegate DOM manipulation to showTodo()
+      // initize todos
+      var todos = new _Todo.default(); // parse json from todo model
+
+      UI.state = JSON.parse(todos.all()); // iterate through each todo and delegate DOM manipulation to showTodo()
 
       UI.state.map(function (todo) {
         return UI.showTodo(todo);
@@ -628,19 +583,19 @@ function () {
 }();
 
 exports.default = Validation;
-},{"./Errors":"src/utils/Errors.js"}],"src/utils/actions.js":[function(require,module,exports) {
+},{"./Errors":"src/utils/Errors.js"}],"src/utils/Actions.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.handleBtnClick = void 0;
+exports.HandleBtnClick = void 0;
 
 var _Todo = _interopRequireDefault(require("../models/Todo"));
 
 var _UI = _interopRequireDefault(require("../components/UI"));
 
-var _Validation = _interopRequireDefault(require("../utils/Validation"));
+var _Validation = _interopRequireDefault(require("./Validation"));
 
 var _Errors = _interopRequireDefault(require("./Errors"));
 
@@ -652,8 +607,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * collect form input, and delegate validation
  *  delegate todo persistence
  */
-var handleBtnClick = function handleBtnClick() {
-  // query but tag
+var HandleBtnClick = function HandleBtnClick() {
+  // query button tag
   var btn = document.getElementById("btn"); // add event to button tag
 
   btn.addEventListener("click", function () {
@@ -698,13 +653,13 @@ var handleBtnClick = function handleBtnClick() {
   });
 };
 
-exports.handleBtnClick = handleBtnClick;
-},{"../models/Todo":"src/models/Todo.js","../components/UI":"src/components/UI.js","../utils/Validation":"src/utils/Validation.js","./Errors":"src/utils/Errors.js"}],"src/main.js":[function(require,module,exports) {
+exports.HandleBtnClick = HandleBtnClick;
+},{"../models/Todo":"src/models/Todo.js","../components/UI":"src/components/UI.js","./Validation":"src/utils/Validation.js","./Errors":"src/utils/Errors.js"}],"src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _UI = _interopRequireDefault(require("./components/UI"));
 
-var _actions = require("./utils/actions");
+var _Actions = require("./utils/Actions");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -714,8 +669,8 @@ window.document.addEventListener("DOMContentLoaded", function () {
   _UI.default.showTodos();
 }); // handle "add new todo" button click
 
-(0, _actions.handleBtnClick)();
-},{"./components/UI":"src/components/UI.js","./utils/actions":"src/utils/actions.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+(0, _Actions.HandleBtnClick)();
+},{"./components/UI":"src/components/UI.js","./utils/Actions":"src/utils/Actions.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

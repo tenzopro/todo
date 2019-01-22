@@ -241,7 +241,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-// todo model
+/**
+ * Extends model abstract
+ * initializes instance properties
+ */
 var Todo =
 /*#__PURE__*/
 function (_AbstractModel) {
@@ -324,7 +327,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-// create DOM elements ref: https://davidwalsh.name/documentfragment
+/**
+ * Class responsible for creating dynamic DOM elements:
+ * todo list, alerts etc
+ * ref: https://davidwalsh.name/documentfragment
+ */
 var UI =
 /*#__PURE__*/
 function () {
@@ -334,38 +341,72 @@ function () {
 
   _createClass(UI, null, [{
     key: "showTodos",
+    // display todos from Todo model
     value: function showTodos() {
-      UI.state = JSON.parse(_Todo.default.all());
+      // parse json from todo model
+      UI.state = JSON.parse(_Todo.default.all()); // iterate through each todo and delegate DOM manipulation to showTodo()
+
       UI.state.map(function (todo) {
         return UI.showTodo(todo);
       });
     }
+    /**
+     * method responsible for creating new DOM nodes and 
+     * assigning todo values to list nodes.
+     * @param {*} todo 
+     */
+
   }, {
     key: "showTodo",
     value: function showTodo(todo) {
-      var appHook = document.getElementById("app");
+      /**
+       * initialize variables:
+       * hook to app id in index.html
+       * create ul, li elements
+       * append children to each respectively
+       */
+      // get div with id 'app' from index.html
+      var appHook = document.getElementById("app"); // create a UL & LI elements
+
       var ul = document.createElement("ul");
-      var li = document.createElement("li");
-      li.innerHTML = todo.title;
-      ul.appendChild(li);
+      var li = document.createElement("li"); // append todo title text in between li tags
+
+      li.innerHTML = todo.title; // then append the li to ul tag
+
+      ul.appendChild(li); // finally append the ul tag to the appHook
+
       appHook.appendChild(ul);
     }
+    /**
+     * displays errors when called
+     * @param {*} errorArray 
+     */
+
   }, {
     key: "renderErrors",
     value: function renderErrors() {
       var errorArray = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
+      // ensure errorsAray is set
       if (errorArray.length === 0) {
+        // stop script if array is empty. log message
         return console.log('expect error array not to be empty');
-      }
+      } // hook to alerts section in index.html
 
-      var alerts = document.getElementById('display-alerts');
-      var ul = document.createElement("ul");
+
+      var alerts = document.getElementById('display-alerts'); // create a ul tag
+
+      var ul = document.createElement("ul"); // loop thru errors
+
       errorArray.forEach(function (error) {
-        var li = document.createElement("li");
-        li.innerHTML = error;
+        // create li element each time
+        var li = document.createElement("li"); // add error text to li element
+
+        li.innerHTML = error; // append it immediately to the ul tag
+
         ul.appendChild(li);
-      });
+      }); // append the ul tag to allerts div
+
       alerts.appendChild(ul);
     }
   }]);
@@ -388,20 +429,28 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+/**
+ * Error handling class
+ * contains errors class property
+ * and get & set class methods
+ */
 var Errors =
 /*#__PURE__*/
 function () {
   function Errors() {
     _classCallCheck(this, Errors);
 
+    // initialize errors property to empty array
     Errors.errors = [];
-  }
+  } // returns errors array
+
 
   _createClass(Errors, null, [{
     key: "get",
     value: function get() {
       return Errors.errors;
-    }
+    } // sets values to errors property
+
   }, {
     key: "set",
     value: function set() {
@@ -432,6 +481,18 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+/**
+ * NOTE: class subject to extention as theres 
+ * a lot of methods that could potentially be added
+ * eg: email, password etc
+ */
+
+/**
+ * Validation class validates any form input.
+ * call validate class method and pass it rules & 
+ * form data. Any errors are routed to Errors class within
+ * its methods.
+ */
 var Validation =
 /*#__PURE__*/
 function () {
@@ -441,61 +502,120 @@ function () {
 
   _createClass(Validation, null, [{
     key: "validate",
+
+    /**
+     * cycles through inputs array and returns TRUE/FALSE
+     * depending on whether there are errors or not
+     * @param {*} rules 
+     * @param {*} data 
+     * returns @bool depending on whether form is valid on not
+     */
     value: function validate(rules, data) {
-      var valid = true;
+      // set valide to true unless something is wrong within data object
+      var valid = true; // loop through rules first
+
       rules.forEach(function (rule, index) {
-        var callbacks = rule.title.split('|');
+        // extract rules into callback array.
+        var callbacks = rule.title.split('|'); // loop thru rules array
+
         callbacks.forEach(function (callback) {
+          /**
+           * extract input data and set value variable
+           * extract keys from data object and set field name
+           * variable
+           */
           var value = data[index] ? data[index] : null;
-          var fieldName = Object.keys(data[0])[0];
+          var fieldName = Object.keys(data[0])[0]; // dynamically call this class methods and pass value and field name.
 
           if (Validation[callback](value, fieldName) === false) {
+            /**
+             * if false ie nthere was a problem: no input value 
+             * or value infringes some rule then set form validity to false.
+             */
             valid = false;
           }
         });
-      });
+      }); // return whether form was valid or not
+
       return valid;
     }
+    /**
+     * Check if input has minimum character length
+     * @param {*} value 
+     * @param {*} fieldName 
+     * Returns @bool true/false 
+     */
+
   }, {
     key: "min",
     value: function min() {
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var fieldName = arguments.length > 1 ? arguments[1] : undefined;
-      var valid = null;
+      // initialize validity
+      var valid = null; // check if input is less that a certain minimum
 
       if (Validation.lessThan(value._name) === true) {
-        valid = false;
+        // if so set valid to false: input has less characters ...
+        // than required
+        valid = false; // set error message to errors class
 
         _Errors.default.set("".concat(fieldName, " must be more than 5 characters."));
       } else {
+        // otherwise input has right number of characters
+        // set valid to true.
         valid = true;
-      }
+      } // return validity
+
 
       return valid;
     }
+    /**
+     * Check input for missing value: input MUST contain value
+     * @param {*} value 
+     * @param {*} fieldName 
+     * returns @bool true/false
+     */
+
   }, {
     key: "required",
     value: function required() {
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var fieldName = arguments.length > 1 ? arguments[1] : undefined;
-      var valid = null;
+      // initialize validity
+      var valid = null; // check if input has empty string
 
       if (Validation.empty(value._name) === true) {
-        valid = false;
+        // if so set validity to false: input is empty
+        valid = false; // set error message to errors class
 
         _Errors.default.set("".concat(fieldName, " is reqired"));
       } else {
+        // otherwise input is valid: set validity to true
         valid = true;
-      }
+      } // return valid
+
 
       return valid;
     }
+    /**
+     * check if field value is empty or not
+     * @param {*} field 
+     * returns @bool true/false
+     */
+
   }, {
     key: "empty",
     value: function empty() {
       var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       return field === null || field.trim().length === 0 ? true : false;
     }
+    /**
+     * checks if field has characters less or equal to 5:
+     * a minimum required for any input field
+     * @param {*} field 
+     * returns @bool true/false
+     */
+
   }, {
     key: "lessThan",
     value: function lessThan() {
@@ -526,33 +646,54 @@ var _Errors = _interopRequireDefault(require("./Errors"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * handle button click
+ * display errors if any
+ * collect form input, and delegate validation
+ *  delegate todo persistence
+ */
 var handleBtnClick = function handleBtnClick() {
-  var btn = document.getElementById("btn");
+  // query but tag
+  var btn = document.getElementById("btn"); // add event to button tag
+
   btn.addEventListener("click", function () {
+    /** 
+     * initialize variables 
+     * **/
+    // set rules
     var rules = [{
       title: 'required|min'
-    }];
+    }]; // get input element
 
-    var _input = document.getElementById("new-todo");
+    var _input = document.getElementById("new-todo"); // obtain input name
 
-    var _name = _input.name;
+
+    var _name = _input.name; // obtain input value
+
     var newTodo = _input.value;
-    new _Errors.default();
+    /** Initialize errors object **/
+
+    new _Errors.default(); // validate input, passing rules and input value.
 
     if (_Validation.default.validate(rules, [{
       _name: newTodo
     }]) === true) {
+      /**
+       * If Validation passes then...
+       * initialize Todo object and save new Todo
+       * clear input UI
+       */
       var todo = new _Todo.default(newTodo);
       todo.save();
 
       _UI.default.showTodo(todo);
 
       _input.value = "";
-      console.log('we good!');
     } else {
+      /**
+       * Otherwise render errors on UI
+       */
       _UI.default.renderErrors(_Errors.default.get());
-
-      console.log(_Errors.default.get());
     }
   });
 };
@@ -571,7 +712,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 window.document.addEventListener("DOMContentLoaded", function () {
   //display data
   _UI.default.showTodos();
-}); // add new todo
+}); // handle "add new todo" button click
 
 (0, _actions.handleBtnClick)();
 },{"./components/UI":"src/components/UI.js","./utils/actions":"src/utils/actions.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {

@@ -1,6 +1,9 @@
 import AbstractModel  from './abstract/AbstractModel';
 
-// todo model
+/**
+ * Extends model abstract
+ * initializes instance properties
+ */
 export default class Todo extends AbstractModel 
 {
 	constructor(title = null) 

@@ -7,6 +7,6 @@ window.document.addEventListener("DOMContentLoaded", function() {
 	UI.showTodos();
 });
 
-// add new todo
+// handle "add new todo" button click
 handleBtnClick();
   

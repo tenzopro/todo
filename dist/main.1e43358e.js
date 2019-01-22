@@ -126,21 +126,27 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var AbstractModel =
+var Model =
 /*#__PURE__*/
 function () {
-  function AbstractModel() {
-    _classCallCheck(this, AbstractModel);
+  function Model(title) {
+    _classCallCheck(this, Model);
 
-    var data = localStorage.getItem("_todos");
-    this.store = data ? data : [];
+    var data = JSON.parse(localStorage.getItem("_todos"));
+    this.todos = data ? data : [];
+    this.title = title;
+    console.log(this.todos);
   }
 
-  _createClass(AbstractModel, [{
+  _createClass(Model, [{
     key: "storeState",
-    value: function storeState(data) {
-      this.store.push(data);
-      localStorage.setItem("_todos", JSON.stringify(this.store));
+    value: function storeState() {
+      this.todos.push({
+        id: Math.floor(Math.random() * 100),
+        title: this.title,
+        completed: false
+      });
+      localStorage.setItem("_todos", JSON.stringify(this.todos));
     }
   }, {
     key: "setStore",
@@ -150,7 +156,7 @@ function () {
   }, {
     key: "all",
     value: function all() {
-      return localStorage.getItem("_todos");
+      return this.todos;
     }
   }, {
     key: "get",
@@ -162,6 +168,12 @@ function () {
       return this.store.filter(function (item) {
         return item.id === id;
       });
+    }
+  }, {
+    key: "save",
+    value: function save() {
+      this.storeState();
+      return this;
     }
   }, {
     key: "edit",
@@ -187,11 +199,6 @@ function () {
       return console.log('Cannot find todo');
     }
   }, {
-    key: "save",
-    value: function save() {
-      return this;
-    }
-  }, {
     key: "delete",
     value: function _delete(id) {
       if (id === null) {
@@ -205,10 +212,10 @@ function () {
     }
   }]);
 
-  return AbstractModel;
+  return Model;
 }();
 
-exports.default = AbstractModel;
+exports.default = Model;
 },{}],"src/models/Todo.js":[function(require,module,exports) {
 "use strict";
 
@@ -217,7 +224,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _AbstractModel2 = _interopRequireDefault(require("./abstract/AbstractModel"));
+var _AbstractModel = _interopRequireDefault(require("./abstract/AbstractModel"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -241,25 +248,21 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  */
 var Todo =
 /*#__PURE__*/
-function (_AbstractModel) {
-  _inherits(Todo, _AbstractModel);
+function (_Model) {
+  _inherits(Todo, _Model);
 
   function Todo() {
-    var _this;
-
     var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
     _classCallCheck(this, Todo);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Todo).call(this));
-    _this.id = Math.floor(Math.random() * 100);
-    _this.title = title;
-    _this.completed = false;
-    return _this;
+    return _possibleConstructorReturn(this, _getPrototypeOf(Todo).call(this, title)); // this.id = Math.floor(Math.random() * 100);
+    // this.title = title;
+    // this.completed = false;
   }
 
   return Todo;
-}(_AbstractModel2.default);
+}(_AbstractModel.default);
 
 exports.default = Todo;
 },{"./abstract/AbstractModel":"src/models/abstract/AbstractModel.js"}],"src/components/UI.js":[function(require,module,exports) {
@@ -299,7 +302,7 @@ function () {
       // initize todos
       var todos = new _Todo.default(); // parse json from todo model
 
-      UI.state = JSON.parse(todos.all()); // iterate through each todo and delegate DOM manipulation to showTodo()
+      UI.state = todos.all(); // iterate through each todo and delegate DOM manipulation to showTodo()
 
       UI.state.map(function (todo) {
         return UI.showTodo(todo);

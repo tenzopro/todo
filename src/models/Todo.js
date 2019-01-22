@@ -1,16 +1,16 @@
-import AbstractModel  from './abstract/AbstractModel';
+import Model  from './abstract/AbstractModel';
 
 /**
  * Extends model abstract
  * initializes instance properties
  */
-export default class Todo extends AbstractModel 
+export default class Todo extends Model 
 {
 	constructor(title = null) 
 	{
-		super();
-	  	this.id = Math.floor(Math.random() * 100);
-	  	this.title = title;
-		this.completed = false;
+		super(title);
+	  	// this.id = Math.floor(Math.random() * 100);
+	  	// this.title = title;
+		// this.completed = false;
 	}
 }

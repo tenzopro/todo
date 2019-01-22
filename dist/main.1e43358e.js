@@ -324,6 +324,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+// create DOM elements ref: https://davidwalsh.name/documentfragment
 var UI =
 /*#__PURE__*/
 function () {
@@ -348,6 +349,24 @@ function () {
       li.innerHTML = todo.title;
       ul.appendChild(li);
       appHook.appendChild(ul);
+    }
+  }, {
+    key: "renderErrors",
+    value: function renderErrors() {
+      var errorArray = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+      if (errorArray.length === 0) {
+        return console.log('expect error array not to be empty');
+      }
+
+      var alerts = document.getElementById('display-alerts');
+      var ul = document.createElement("ul");
+      errorArray.forEach(function (error) {
+        var li = document.createElement("li");
+        li.innerHTML = error;
+        ul.appendChild(li);
+      });
+      alerts.appendChild(ul);
     }
   }]);
 
@@ -529,7 +548,9 @@ var handleBtnClick = function handleBtnClick() {
       _input.value = "";
       console.log('we good!');
     } else {
-      console.log(_Errors.default.errors);
+      _UI.default.renderErrors(_Errors.default.get());
+
+      console.log(_Errors.default.get());
     }
   });
 };

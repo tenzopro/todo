@@ -4,7 +4,7 @@ import Validation from '../utils/Validation';
 import Errors from './Errors';
 
 const handleBtnClick = () => {
-    
+
     const btn = document.getElementById("btn");
 
     btn.addEventListener("click", () => {
@@ -24,7 +24,8 @@ const handleBtnClick = () => {
             _input.value = "";
             console.log('we good!');
         } else {
-            console.log(Errors.errors);
+            UI.renderErrors(Errors.get());
+            console.log(Errors.get());
         }
     });
 };

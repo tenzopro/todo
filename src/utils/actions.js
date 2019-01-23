@@ -53,4 +53,46 @@ const HandleBtnClick = () => {
     });
 };
 
-export { HandleBtnClick };
+const toggleCompleted = () => {
+
+    // selectlist item wrapper - ul tag
+    const todoList = document.querySelector('#list-items');
+
+    // add event to it plus its children (propgation)
+    todoList.addEventListener('click', (e) => {
+        // delegate action to UI toggle action -
+        // passing the clicked element
+        UI.toggleTodo(e.target);
+    }, false);
+};
+
+const removeTodo = () => {
+
+    // selectlist item wrapper
+    const todoList = document.querySelector('#list-items');
+
+    todoList.addEventListener('click', (e) => {
+        UI.removeTodo(e.target);
+    }, false);
+};
+
+/**
+ * check if field value is empty or not
+ * @param {*} field 
+ * returns @bool true/false
+ */
+const isEmpty = (field=null) => {
+    return (field ===null || field.trim().length===0) ? true : false;
+};
+
+/**
+ * checks if field has characters less or equal to 5:
+ * a minimum required for any input field
+ * @param {*} field 
+ * returns @bool true/false
+ */
+const isLessThan = (field=null) => {
+    return (field.length <= 5) ? true : false;
+};
+
+export { HandleBtnClick, toggleCompleted, removeTodo, isEmpty, isLessThan };

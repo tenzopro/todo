@@ -1,10 +1,14 @@
 
+/**
+ * Handles all CRUD tasks
+ * Abstracts methods for child models 
+ * thru inheritance (all models inherit from Model class)
+ */
 export default class Model 
 {
     constructor(title)
     {
-        let data = JSON.parse(localStorage.getItem("_todos"));
-        this.todos =  (data) ? data : [];
+        this.todos = JSON.parse(localStorage.getItem("_todos"));
         this.title = title;
     }
 
@@ -19,11 +23,15 @@ export default class Model
         localStorage.setItem("_todos", JSON.stringify(this.todos));
     }
 
-    setStore(data)
+    updateStore(_todo)
     {
-        this.storeState(data);
+        let newTodos = this.todos.filter(todo => todo.id !== _todo[0].id);
+        let newStore = [...newTodos, _todo[0]];
+        this.todos = newStore;
+        localStorage.setItem("_todos", JSON.stringify(newStore));
     }
 
+    // returns all todos
     all() 
     {
         return this.todos;
@@ -39,39 +47,32 @@ export default class Model
         return this.store.filter(item => item.id === id );
     }
 
+    /**
+     * invokes setStore method which engages 
+     * persistence storage 
+     */
     save()
     {
         this.storeState();
-        return this;
     }
 
-    edit(id=null, title=null) 
+    editTitle(id, _title) 
     {
-        if(id===null || title===null) 
-        {
-			return console.log("Update function expects exactly 1 arg. 0 passed");
-        }
-        
         let todo = this.store.filter(item => item.id === id );
-
-        if(todo) 
-        {
-            todo.title = title;
-            let newStore = [...this.store, edited];
-            this.setStore(newStore);
-            return true;
-        } 
         
-        return console.log('Cannot find todo');    
+        todo.title = _title;
+        this.updateStore(todo);
+    }
+
+    toggleCompleted(id)
+    {
+        let todo = this.todos.filter(item => item.id == id );
+        todo[0].completed = !todo[0].completed;
+        this.updateStore(todo);
     }
 
     delete(id) 
     {
-        if(id===null) 
-        {
-            return console.log("Remove function expects exactly 1 arg. 0 passed");
-        }
-
         this.store = this.store.filter(todo => todo.id !== id );
         return true;
     }

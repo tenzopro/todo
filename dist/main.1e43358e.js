@@ -126,14 +126,18 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+/**
+ * Handles all CRUD tasks
+ * Abstracts methods for child models 
+ * thru inheritance (all models inherit from Model class)
+ */
 var Model =
 /*#__PURE__*/
 function () {
   function Model(title) {
     _classCallCheck(this, Model);
 
-    var data = JSON.parse(localStorage.getItem("_todos"));
-    this.todos = data ? data : [];
+    this.todos = JSON.parse(localStorage.getItem("_todos"));
     this.title = title;
   }
 
@@ -148,10 +152,16 @@ function () {
       localStorage.setItem("_todos", JSON.stringify(this.todos));
     }
   }, {
-    key: "setStore",
-    value: function setStore(data) {
-      this.storeState(data);
-    }
+    key: "updateStore",
+    value: function updateStore(_todo) {
+      var newTodos = this.todos.filter(function (todo) {
+        return todo.id !== _todo[0].id;
+      });
+      var newStore = [].concat(_toConsumableArray(newTodos), [_todo[0]]);
+      this.todos = newStore;
+      localStorage.setItem("_todos", JSON.stringify(newStore));
+    } // returns all todos
+
   }, {
     key: "all",
     value: function all() {
@@ -168,42 +178,37 @@ function () {
         return item.id === id;
       });
     }
+    /**
+     * invokes setStore method which engages 
+     * persistence storage 
+     */
+
   }, {
     key: "save",
     value: function save() {
       this.storeState();
-      return this;
     }
   }, {
-    key: "edit",
-    value: function edit() {
-      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      var title = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-      if (id === null || title === null) {
-        return console.log("Update function expects exactly 1 arg. 0 passed");
-      }
-
+    key: "editTitle",
+    value: function editTitle(id, _title) {
       var todo = this.store.filter(function (item) {
         return item.id === id;
       });
-
-      if (todo) {
-        todo.title = title;
-        var newStore = [].concat(_toConsumableArray(this.store), [edited]);
-        this.setStore(newStore);
-        return true;
-      }
-
-      return console.log('Cannot find todo');
+      todo.title = _title;
+      this.updateStore(todo);
+    }
+  }, {
+    key: "toggleCompleted",
+    value: function toggleCompleted(id) {
+      var todo = this.todos.filter(function (item) {
+        return item.id == id;
+      });
+      todo[0].completed = !todo[0].completed;
+      this.updateStore(todo);
     }
   }, {
     key: "delete",
     value: function _delete(id) {
-      if (id === null) {
-        return console.log("Remove function expects exactly 1 arg. 0 passed");
-      }
-
       this.store = this.store.filter(function (todo) {
         return todo.id !== id;
       });
@@ -288,20 +293,25 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var UI =
 /*#__PURE__*/
 function () {
-  function UI() {
+  function UI(todos) {
     _classCallCheck(this, UI);
+
+    // init todos
+    UI.todos = new _Todo.default(); // get div with id 'app' from index.html
+
+    UI.appHook = document.getElementById("app");
+    UI.ul = document.createElement("ul");
+    UI.ul.setAttribute("id", "list-items");
   }
 
   _createClass(UI, null, [{
     key: "showTodos",
-    // display todos from Todo model
     value: function showTodos() {
-      // initize todos
-      var todos = new _Todo.default(); // parse json from todo model
+      // get todos
+      var todos = UI.todos.all(); // iterate through each todo and 
+      //delegate DOM manipulation to showTodo()
 
-      UI.state = todos.all(); // iterate through each todo and delegate DOM manipulation to showTodo()
-
-      UI.state.map(function (todo) {
+      todos.map(function (todo) {
         return UI.showTodo(todo);
       });
     }
@@ -314,38 +324,53 @@ function () {
   }, {
     key: "showTodo",
     value: function showTodo(todo) {
-      /**
-       * initialize variables:
-       * hook to app id in index.html
-       * create ul, li elements
-       * append children to each respectively
-       */
-      // get div with id 'app' from index.html
-      var appHook = document.getElementById("app"); // create a UL & LI elements
-
-      var ul = document.createElement("ul");
+      // create a UL & LI elements
       var li = document.createElement("li");
       var input = document.createElement("input");
       var btn1 = document.createElement("button");
-      var btn2 = document.createElement("button"); // add attributes
+      var btn2 = document.createElement("button"); // set attributes to elements
 
       input.setAttribute('type', 'checkbox');
-      input.setAttribute('id', 'checkbox');
+      input.setAttribute('class', 'checkbox');
+      input.setAttribute('value', todo.id);
       btn1.setAttribute('id', todo.id);
-      btn1.setAttribute('id', 'btn1');
+      btn1.setAttribute('class', 'edit');
       btn1.innerHTML = "Edit";
       btn2.setAttribute('id', todo.id);
-      btn2.setAttribute('id', 'btn2');
+      btn2.setAttribute('class', 'delete');
       btn2.innerHTML = "Delete"; // append children to li tag
 
       li.innerHTML = todo.title;
-      li.appendChild(input);
+      li.prepend(input);
       li.appendChild(btn1);
       li.appendChild(btn2); // then append the li to ul tag
 
-      ul.appendChild(li); // finally append the ul tag to the appHook
+      UI.ul.appendChild(li); // finally append the ul tag to the appHook
 
-      appHook.appendChild(ul);
+      UI.appHook.appendChild(UI.ul);
+    }
+  }, {
+    key: "toggleTodo",
+    value: function toggleTodo(el) {
+      if (el.classList.contains('checkbox')) {
+        // update completed property
+        UI.todos.toggleCompleted(el.value); // update the UI
+
+        el.parentElement.classList.toggle("true");
+      }
+    }
+  }, {
+    key: "editTodo",
+    value: function editTodo(el) {
+      if (el.classList.contains('edit')) {// edit todo
+      }
+    }
+  }, {
+    key: "removeTodo",
+    value: function removeTodo(el) {
+      if (el.classList.contains('delete')) {
+        el.parentElement.remove();
+      }
     }
     /**
      * displays errors when called
@@ -604,7 +629,7 @@ exports.default = Validation;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.HandleBtnClick = void 0;
+exports.isLessThan = exports.isEmpty = exports.removeTodo = exports.toggleCompleted = exports.HandleBtnClick = void 0;
 
 var _Todo = _interopRequireDefault(require("../models/Todo"));
 
@@ -669,6 +694,56 @@ var HandleBtnClick = function HandleBtnClick() {
 };
 
 exports.HandleBtnClick = HandleBtnClick;
+
+var toggleCompleted = function toggleCompleted() {
+  // selectlist item wrapper - ul tag
+  var todoList = document.querySelector('#list-items'); // add event to it plus its children (propgation)
+
+  todoList.addEventListener('click', function (e) {
+    // delegate action to UI toggle action -
+    // passing the clicked element
+    _UI.default.toggleTodo(e.target);
+  }, false);
+};
+
+exports.toggleCompleted = toggleCompleted;
+
+var removeTodo = function removeTodo() {
+  // selectlist item wrapper
+  var todoList = document.querySelector('#list-items');
+  todoList.addEventListener('click', function (e) {
+    _UI.default.removeTodo(e.target);
+  }, false);
+};
+/**
+ * check if field value is empty or not
+ * @param {*} field 
+ * returns @bool true/false
+ */
+
+
+exports.removeTodo = removeTodo;
+
+var isEmpty = function isEmpty() {
+  var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  return field === null || field.trim().length === 0 ? true : false;
+};
+/**
+ * checks if field has characters less or equal to 5:
+ * a minimum required for any input field
+ * @param {*} field 
+ * returns @bool true/false
+ */
+
+
+exports.isEmpty = isEmpty;
+
+var isLessThan = function isLessThan() {
+  var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  return field.length <= 5 ? true : false;
+};
+
+exports.isLessThan = isLessThan;
 },{"../models/Todo":"src/models/Todo.js","../components/UI":"src/components/UI.js","./Validation":"src/utils/Validation.js","./Errors":"src/utils/Errors.js"}],"src/main.js":[function(require,module,exports) {
 "use strict";
 
@@ -680,11 +755,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // display todos when DOM loads
 window.document.addEventListener("DOMContentLoaded", function () {
-  //display data
-  _UI.default.showTodos();
-}); // handle "add new todo" button click
+  // initialize UI
+  new _UI.default(); //display data
 
-(0, _Actions.HandleBtnClick)();
+  _UI.default.showTodos(); // handle "add new todo" button click
+
+
+  (0, _Actions.HandleBtnClick)();
+  (0, _Actions.toggleCompleted)();
+});
 },{"./components/UI":"src/components/UI.js","./utils/Actions":"src/utils/Actions.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -712,7 +791,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63528" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61250" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

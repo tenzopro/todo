@@ -1,7 +1,7 @@
 import Todo from '../models/Todo';
 import UI from '../components/UI';
-import Validation from './Validation';
-import Errors from './Errors';
+import Validation from '../lib/Validation';
+import Errors from '../lib/Errors';
 
 /**
  * handle button click
@@ -9,7 +9,7 @@ import Errors from './Errors';
  * collect form input, and delegate validation
  *  delegate todo persistence
  */
-const HandleBtnClick = () => {
+const todoSubmit = () => {
 
     // query button tag
     const btn = document.getElementById("btn");
@@ -55,15 +55,35 @@ const HandleBtnClick = () => {
 
 const toggleCompleted = () => {
 
-    // selectlist item wrapper - ul tag
     const todoList = document.querySelector('#list-items');
 
-    // add event to it plus its children (propgation)
-    todoList.addEventListener('click', (e) => {
-        // delegate action to UI toggle action -
-        // passing the clicked element
-        UI.toggleTodo(e.target);
-    }, false);
+    if(todoList)
+    {
+        // add event to it plus its children (propgation)
+        todoList.addEventListener('click', (e) => {
+            /**
+             * delegate action to UI toggle action -
+             * passing the clicked element
+             */
+            UI.toggleTodo(e.target);
+        }, false);
+    }
+};
+
+const editTodo = () => {
+
+    const todoList = document.querySelector('#list-items');
+
+    if(todoList)
+    {
+        todoList.addEventListener('dblclick', (e) => {
+            /**
+             * delegate action to UI edit action -
+             * passing the clicked element
+             */
+            UI.editTodo(e.target);
+        }, false);
+    }
 };
 
 const removeTodo = () => {
@@ -76,23 +96,5 @@ const removeTodo = () => {
     }, false);
 };
 
-/**
- * check if field value is empty or not
- * @param {*} field 
- * returns @bool true/false
- */
-const isEmpty = (field=null) => {
-    return (field ===null || field.trim().length===0) ? true : false;
-};
 
-/**
- * checks if field has characters less or equal to 5:
- * a minimum required for any input field
- * @param {*} field 
- * returns @bool true/false
- */
-const isLessThan = (field=null) => {
-    return (field.length <= 5) ? true : false;
-};
-
-export { HandleBtnClick, toggleCompleted, removeTodo, isEmpty, isLessThan };
+export { todoSubmit, toggleCompleted, editTodo, removeTodo };

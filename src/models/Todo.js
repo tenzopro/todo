@@ -1,4 +1,4 @@
-import Model  from './abstract/AbstractModel';
+import Model  from './abstract/Model';
 
 /**
  * Extends model abstract

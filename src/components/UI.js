@@ -1,4 +1,5 @@
 import Todo from '../models/Todo';
+import { isEmpty } from '../lib/Utils';
 
 /**
  * Class responsible for creating dynamic DOM elements:
@@ -14,8 +15,8 @@ export default class UI
 
 		// get div with id 'app' from index.html
 		UI.appHook = document.getElementById("app");
-		UI.ul = document.createElement("ul");
-		UI.ul.setAttribute("id", "list-items");
+		UI.table = document.createElement("table");
+		UI.table.setAttribute("id", "list-items");
 	}
 
     static showTodos() 
@@ -36,54 +37,70 @@ export default class UI
     static showTodo(todo) 
     {
 		// create a UL & LI elements
-		const li = document.createElement("li");
+		const tr = document.createElement("tr");
+		const td = document.createElement("td");
+		const td1 = document.createElement("td");
+		const td2 = document.createElement("td");
 		const input = document.createElement("input"); 
-		const btn1 = document.createElement("button"); 
-		const btn2 = document.createElement("button"); 
+		const span = document.createElement("span"); 
+		const btn = document.createElement("button"); 
 
 		// set attributes to elements
 		input.setAttribute('type', 'checkbox'); 
 		input.setAttribute('class', 'checkbox');
 		input.setAttribute('value', todo.id);
-		
 
-		btn1.setAttribute('id', todo.id); 
-		btn1.setAttribute('class', 'edit');
-		btn1.innerHTML = "Edit";
+		span.setAttribute('class', 'todo-title');
+		span.setAttribute('id', todo.id);
+		span.innerHTML = todo.title;
 
-		btn2.setAttribute('id', todo.id); 
-		btn2.setAttribute('class', 'delete');
-		btn2.innerHTML = "Delete";
+		btn.setAttribute('id', todo.id); 
+		btn.setAttribute('class', 'delete');
+		btn.innerHTML = "X";
 		
 		// append children to li tag
-		li.innerHTML = todo.title;
-		li.prepend(input);
-		li.appendChild(btn1);
-		li.appendChild(btn2);
+		td.prepend(input);
+		td1.appendChild(span);
+		td2.appendChild(btn);
 
 		// then append the li to ul tag
-		UI.ul.appendChild(li);
+		tr.setAttribute('class', todo.completed);
+		tr.appendChild(td);
+		tr.appendChild(td1);
+		tr.appendChild(td2);
+
+		UI.table.appendChild(tr);
 
 		// finally append the ul tag to the appHook
-		UI.appHook.appendChild(UI.ul);
+		UI.appHook.appendChild(UI.table);
 	}
 
 	static toggleTodo(el)
 	{
+		// select only element(s) with 'checkbos' class attrs
 		if(el.classList.contains('checkbox'))
 		{
 			// update completed property
-			UI.todos.toggleCompleted(el.value,);
+			UI.todos.toggleCompleted(el.value);
 			// update the UI
-			el.parentElement.classList.toggle("true");
+			el.parentElement.parentElement.classList.toggle("true");
 		}
 	}
 
 	static editTodo(el) 
 	{
-		if(el.classList.contains('edit'))
+		if(el.classList.contains('todo-title'))
 		{
 			// edit todo
+			const newTitleText = prompt("Enter new todo title");
+
+			if(isEmpty(newTitleText) == true) 
+			{
+				return;
+			}
+
+			UI.todos.editTitle(el.id, newTitleText);
+			el.innerHTML = newTitleText;
 		}
 	}
 

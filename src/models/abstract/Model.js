@@ -1,3 +1,5 @@
+import Store from './data/Store';
+import { mergeObjs } from '../../lib/Utils'
 
 /**
  * Handles all CRUD tasks
@@ -8,7 +10,7 @@ export default class Model
 {
     constructor(title)
     {
-        this.todos = JSON.parse(localStorage.getItem("_todos"));
+        this.todos = Store.todos();
         this.title = title;
     }
 
@@ -20,15 +22,16 @@ export default class Model
             completed: false
         });
 
-        localStorage.setItem("_todos", JSON.stringify(this.todos));
+        Store.save(this.todos);
     }
 
     updateStore(_todo)
     {
-        let newTodos = this.todos.filter(todo => todo.id !== _todo[0].id);
-        let newStore = [...newTodos, _todo[0]];
-        this.todos = newStore;
-        localStorage.setItem("_todos", JSON.stringify(newStore));
+        const newStore = mergeObjs(this.todos, _todo);
+        Store.save(newStore);
+        // let newTodos = this.todos.filter(todo => todo.id !== _todo[0].id);
+        // let newStore = [...newTodos, _todo[0]];
+        // localStorage.setItem("_todos", JSON.stringify(newStore));
     }
 
     // returns all todos
@@ -39,28 +42,22 @@ export default class Model
 
     get(id)
     {
-        if(id===null) 
-        {
-			return console.log("function expects exactly 1 arg. 0 passed");
-        }
-        
-        return this.store.filter(item => item.id === id );
+        return this.todos.filter(item => item.id === id );
     }
 
     /**
      * invokes setStore method which engages 
-     * persistence storage 
+     * persistence storage when saving NEW todo
      */
     save()
     {
         this.storeState();
     }
 
-    editTitle(id, _title) 
+    editTitle(id, newTitleText) 
     {
-        let todo = this.store.filter(item => item.id === id );
-        
-        todo.title = _title;
+        let todo = this.todos.filter(item => item.id == id );
+        todo[0].title = newTitleText;
         this.updateStore(todo);
     }
 
@@ -73,7 +70,8 @@ export default class Model
 
     delete(id) 
     {
-        this.store = this.store.filter(todo => todo.id !== id );
+        this.todos = this.store.filter(todo => todo.id !== id );
         return true;
     }
 }
+

@@ -2,13 +2,13 @@ const Store = (function() {
     
     const _data = localStorage.getItem("_todos");
 
-    const anyData = (_data) => {
-        return (_data===null) ? false : true;
+    const anyData = (data) => {
+        return (data==null) ? false : true;
     }
 
     const getTodos = () => {
     
-        if(anyData()==false) 
+        if(anyData(_data)===false) 
         {
             const _id = Math.floor(Math.random() * 100);
             const data = JSON.stringify([

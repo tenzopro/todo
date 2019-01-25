@@ -35,6 +35,7 @@ const todoSubmit = () => {
         // validate input, passing rules and input value.
         if(Validation.validate(rules, [{ _name: newTodo }])===true)
         {
+            const p = document.querySelector('#pretext');
             /**
              * If Validation passes then...
              * initialize Todo object and save new Todo
@@ -42,6 +43,7 @@ const todoSubmit = () => {
              */
             const todo = new Todo(newTodo);
             todo.save();
+            (p) ? p.remove() : null;
             UI.showTodo(todo);
             _input.value = "";
         } else {
@@ -90,10 +92,12 @@ const removeTodo = () => {
 
     // selectlist item wrapper
     const todoList = document.querySelector('#list-items');
-
-    todoList.addEventListener('click', (e) => {
-        UI.removeTodo(e.target);
-    }, false);
+    if(todoList)
+    {
+        todoList.addEventListener('click', (e) => {
+            UI.removeTodo(e.target);
+        }, false);
+    }
 };
 
 

@@ -24,6 +24,20 @@ export default class UI
 		// get todos
 		const todos = UI.todos.all();
 
+		if(!todos) 
+		{
+			const preText = `
+				<span>You have no todos yet :)</span><br/><br/>
+				<small>(Type into box and click on + button)</small>
+			`;
+
+			const p = document.createElement("p");
+			p.setAttribute('id', 'pretext');
+			p.innerHTML = preText;
+			UI.appHook.appendChild(p);
+			return;
+		}
+		
 		// iterate through each todo and 
 		//delegate DOM manipulation to showTodo()
 		todos.map(todo => UI.showTodo(todo));
@@ -36,7 +50,9 @@ export default class UI
 	 */
     static showTodo(todo) 
     {
-		// create a UL & LI elements
+		/**
+		 * create table, tr & td elements
+		 */
 		const tr = document.createElement("tr");
 		const td = document.createElement("td");
 		const td1 = document.createElement("td");
@@ -45,7 +61,11 @@ export default class UI
 		const span = document.createElement("span"); 
 		const btn = document.createElement("button"); 
 
-		// set attributes to elements
+		/**
+		 * set attributes 
+		 */
+		tr.setAttribute('class', todo.completed);
+
 		input.setAttribute('type', 'checkbox'); 
 		input.setAttribute('class', 'checkbox');
 		input.setAttribute('value', todo.id);
@@ -58,20 +78,22 @@ export default class UI
 		btn.setAttribute('class', 'delete');
 		btn.innerHTML = "X";
 		
-		// append children to li tag
+		/**
+		 * append children
+		 */
 		td.prepend(input);
 		td1.appendChild(span);
 		td2.appendChild(btn);
-
-		// then append the li to ul tag
-		tr.setAttribute('class', todo.completed);
+		
 		tr.appendChild(td);
 		tr.appendChild(td1);
 		tr.appendChild(td2);
 
 		UI.table.appendChild(tr);
 
-		// finally append the ul tag to the appHook
+		/**
+		 * finally append table to appHook
+		 */
 		UI.appHook.appendChild(UI.table);
 	}
 
@@ -108,7 +130,8 @@ export default class UI
 	{
 		if(el.classList.contains('delete'))
 		{
-			el.parentElement.remove();
+			UI.todos.delete(el.id);
+			el.parentElement.parentElement.remove();
 		}
 	}
 
@@ -146,5 +169,9 @@ export default class UI
 
 		// append the ul tag to allerts div
 		alerts.appendChild(ul);
+
+		setTimeout(() => {
+			alerts.remove()
+		}, 3000);
 	}
 }

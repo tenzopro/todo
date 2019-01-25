@@ -10,8 +10,28 @@ export default class Model
 {
     constructor(title)
     {
-        this.todos = Store.todos();
         this.title = title;
+        this.todos = Store.todos();
+    }
+
+    // returns all todos
+    all() 
+    {
+        return this.todos;
+    }
+
+    get(id)
+    {
+        return this.todos.filter(item => item.id == id );
+    }
+
+    /**
+     * invokes storeState method which engages 
+     * persistence storage when saving NEW todo
+     */
+    save()
+    {
+        this.storeState();
     }
 
     storeState() 
@@ -25,40 +45,18 @@ export default class Model
         Store.save(this.todos);
     }
 
-    updateStore(_todo)
-    {
-        const newStore = mergeObjs(this.todos, _todo);
-        Store.save(newStore);
-        // let newTodos = this.todos.filter(todo => todo.id !== _todo[0].id);
-        // let newStore = [...newTodos, _todo[0]];
-        // localStorage.setItem("_todos", JSON.stringify(newStore));
-    }
-
-    // returns all todos
-    all() 
-    {
-        return this.todos;
-    }
-
-    get(id)
-    {
-        return this.todos.filter(item => item.id === id );
-    }
-
-    /**
-     * invokes setStore method which engages 
-     * persistence storage when saving NEW todo
-     */
-    save()
-    {
-        this.storeState();
-    }
-
     editTitle(id, newTitleText) 
     {
         let todo = this.todos.filter(item => item.id == id );
         todo[0].title = newTitleText;
         this.updateStore(todo);
+    }
+
+    updateStore(_todo)
+    {
+        // update - merge data and save it to store
+        const newStore = mergeObjs(this.todos, _todo);
+        Store.save(newStore);
     }
 
     toggleCompleted(id)
@@ -68,10 +66,10 @@ export default class Model
         this.updateStore(todo);
     }
 
-    delete(id) 
+    delete(_id) 
     {
-        this.todos = this.store.filter(todo => todo.id !== id );
-        return true;
+        const remainingTodos = this.todos.filter( todo => todo.id != _id );
+        Store.save(remainingTodos);
     }
 }
 

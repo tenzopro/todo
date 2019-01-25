@@ -115,12 +115,12 @@ exports.default = void 0;
 var Store = function () {
   var _data = localStorage.getItem("_todos");
 
-  var anyData = function anyData(_data) {
-    return _data === null ? false : true;
+  var anyData = function anyData(data) {
+    return data == null ? false : true;
   };
 
   var getTodos = function getTodos() {
-    if (anyData() == false) {
+    if (anyData(_data) === false) {
       var _id = Math.floor(Math.random() * 100);
 
       var data = JSON.stringify([{
@@ -228,11 +228,34 @@ function () {
   function Model(title) {
     _classCallCheck(this, Model);
 
-    this.todos = _Store.default.todos();
     this.title = title;
-  }
+    this.todos = _Store.default.todos();
+  } // returns all todos
+
 
   _createClass(Model, [{
+    key: "all",
+    value: function all() {
+      return this.todos;
+    }
+  }, {
+    key: "get",
+    value: function get(id) {
+      return this.todos.filter(function (item) {
+        return item.id == id;
+      });
+    }
+    /**
+     * invokes storeState method which engages 
+     * persistence storage when saving NEW todo
+     */
+
+  }, {
+    key: "save",
+    value: function save() {
+      this.storeState();
+    }
+  }, {
     key: "storeState",
     value: function storeState() {
       this.todos.push({
@@ -244,39 +267,6 @@ function () {
       _Store.default.save(this.todos);
     }
   }, {
-    key: "updateStore",
-    value: function updateStore(_todo) {
-      var newStore = (0, _Utils.mergeObjs)(this.todos, _todo);
-
-      _Store.default.save(newStore); // let newTodos = this.todos.filter(todo => todo.id !== _todo[0].id);
-      // let newStore = [...newTodos, _todo[0]];
-      // localStorage.setItem("_todos", JSON.stringify(newStore));
-
-    } // returns all todos
-
-  }, {
-    key: "all",
-    value: function all() {
-      return this.todos;
-    }
-  }, {
-    key: "get",
-    value: function get(id) {
-      return this.todos.filter(function (item) {
-        return item.id === id;
-      });
-    }
-    /**
-     * invokes setStore method which engages 
-     * persistence storage when saving NEW todo
-     */
-
-  }, {
-    key: "save",
-    value: function save() {
-      this.storeState();
-    }
-  }, {
     key: "editTitle",
     value: function editTitle(id, newTitleText) {
       var todo = this.todos.filter(function (item) {
@@ -284,6 +274,14 @@ function () {
       });
       todo[0].title = newTitleText;
       this.updateStore(todo);
+    }
+  }, {
+    key: "updateStore",
+    value: function updateStore(_todo) {
+      // update - merge data and save it to store
+      var newStore = (0, _Utils.mergeObjs)(this.todos, _todo);
+
+      _Store.default.save(newStore);
     }
   }, {
     key: "toggleCompleted",
@@ -296,11 +294,12 @@ function () {
     }
   }, {
     key: "delete",
-    value: function _delete(id) {
-      this.todos = this.store.filter(function (todo) {
-        return todo.id !== id;
+    value: function _delete(_id) {
+      var remainingTodos = this.todos.filter(function (todo) {
+        return todo.id != _id;
       });
-      return true;
+
+      _Store.default.save(remainingTodos);
     }
   }]);
 
@@ -398,8 +397,18 @@ function () {
     key: "showTodos",
     value: function showTodos() {
       // get todos
-      var todos = UI.todos.all(); // iterate through each todo and 
+      var todos = UI.todos.all();
+
+      if (!todos) {
+        var preText = "\n\t\t\t\t<span>You have no todos yet :)</span><br/><br/>\n\t\t\t\t<small>(Type into box and click on + button)</small>\n\t\t\t";
+        var p = document.createElement("p");
+        p.setAttribute('id', 'pretext');
+        p.innerHTML = preText;
+        UI.appHook.appendChild(p);
+        return;
+      } // iterate through each todo and 
       //delegate DOM manipulation to showTodo()
+
 
       todos.map(function (todo) {
         return UI.showTodo(todo);
@@ -414,15 +423,21 @@ function () {
   }, {
     key: "showTodo",
     value: function showTodo(todo) {
-      // create a UL & LI elements
+      /**
+       * create table, tr & td elements
+       */
       var tr = document.createElement("tr");
       var td = document.createElement("td");
       var td1 = document.createElement("td");
       var td2 = document.createElement("td");
       var input = document.createElement("input");
       var span = document.createElement("span");
-      var btn = document.createElement("button"); // set attributes to elements
+      var btn = document.createElement("button");
+      /**
+       * set attributes 
+       */
 
+      tr.setAttribute('class', todo.completed);
       input.setAttribute('type', 'checkbox');
       input.setAttribute('class', 'checkbox');
       input.setAttribute('value', todo.id);
@@ -431,17 +446,21 @@ function () {
       span.innerHTML = todo.title;
       btn.setAttribute('id', todo.id);
       btn.setAttribute('class', 'delete');
-      btn.innerHTML = "X"; // append children to li tag
+      btn.innerHTML = "X";
+      /**
+       * append children
+       */
 
       td.prepend(input);
       td1.appendChild(span);
-      td2.appendChild(btn); // then append the li to ul tag
-
-      tr.setAttribute('class', todo.completed);
+      td2.appendChild(btn);
       tr.appendChild(td);
       tr.appendChild(td1);
       tr.appendChild(td2);
-      UI.table.appendChild(tr); // finally append the ul tag to the appHook
+      UI.table.appendChild(tr);
+      /**
+       * finally append table to appHook
+       */
 
       UI.appHook.appendChild(UI.table);
     }
@@ -475,7 +494,8 @@ function () {
     key: "removeTodo",
     value: function removeTodo(el) {
       if (el.classList.contains('delete')) {
-        el.parentElement.remove();
+        UI.todos.delete(el.id);
+        el.parentElement.parentElement.remove();
       }
     }
     /**
@@ -509,6 +529,9 @@ function () {
       }); // append the ul tag to allerts div
 
       alerts.appendChild(ul);
+      setTimeout(function () {
+        alerts.remove();
+      }, 3000);
     }
   }]);
 
@@ -779,13 +802,16 @@ var todoSubmit = function todoSubmit() {
     if (_Validation.default.validate(rules, [{
       _name: newTodo
     }]) === true) {
+      var p = document.querySelector('#pretext');
       /**
        * If Validation passes then...
        * initialize Todo object and save new Todo
        * clear input UI
        */
+
       var todo = new _Todo.default(newTodo);
       todo.save();
+      p ? p.remove() : null;
 
       _UI.default.showTodo(todo);
 
@@ -837,9 +863,12 @@ exports.editTodo = editTodo;
 var removeTodo = function removeTodo() {
   // selectlist item wrapper
   var todoList = document.querySelector('#list-items');
-  todoList.addEventListener('click', function (e) {
-    _UI.default.removeTodo(e.target);
-  }, false);
+
+  if (todoList) {
+    todoList.addEventListener('click', function (e) {
+      _UI.default.removeTodo(e.target);
+    }, false);
+  }
 };
 
 exports.removeTodo = removeTodo;
@@ -863,6 +892,7 @@ window.document.addEventListener("DOMContentLoaded", function () {
   (0, _Actions.todoSubmit)();
   (0, _Actions.toggleCompleted)();
   (0, _Actions.editTodo)();
+  (0, _Actions.removeTodo)();
 });
 },{"./components/UI":"src/components/UI.js","./controllers/Actions":"src/controllers/Actions.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -891,7 +921,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57227" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49294" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

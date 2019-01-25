@@ -261,12 +261,13 @@ function () {
   }, {
     key: "storeState",
     value: function storeState() {
-      // this.todos.push({
-      //     id: Math.floor(Math.random() * 100),
-      //     title: this.title,
-      //     completed: false
-      // });
-      console.log(this.todos); // Store.save(this.todos);
+      this.todos.push({
+        id: Math.floor(Math.random() * 100),
+        title: this.title,
+        completed: false
+      });
+
+      _Store.default.save(this.todos);
     }
   }, {
     key: "editTitle",

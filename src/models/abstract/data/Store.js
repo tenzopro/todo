@@ -1,29 +1,30 @@
 const Store = (function() {
-    
-    const _data = localStorage.getItem("_todos");
 
-    const anyData = (data) => {
-        return (data==null) ? false : true;
-    }
+    const db =  JSON.parse(localStorage.getItem("_todos")); 
 
     const getTodos = () => {
-    
-        if(anyData(_data)===false) 
+        
+        if(anyData(db)==false) 
         {
-            const _id = Math.floor(Math.random() * 100);
-            const data = JSON.stringify([
-                { id: _id, title: "You're up & running!", completed: false }
-            ]);
-            localStorage.setItem('_todos', data);
-            return JSON.parse(localStorage.getItem("_todos"));
+            dbInit();
         } 
-        else {
-            return JSON.parse(localStorage.getItem("_todos"));
-        }
+        return db;
     };
 
     const saveData = (data) => {
         localStorage.setItem("_todos", JSON.stringify(data));
+    };
+
+    const dbInit = () => {
+        const _id = Math.floor(Math.random() * 100);
+        const data = JSON.stringify([
+            { id: _id, title: "You're up & running!", completed: false }
+        ]);
+        localStorage.setItem('_todos', data);
+    };
+
+    const anyData = (data) => {
+        return (data==null || data==undefined) ? false : true;
     };
 
     return {

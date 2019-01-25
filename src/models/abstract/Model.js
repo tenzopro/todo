@@ -36,13 +36,13 @@ export default class Model
 
     storeState() 
     {
-        this.todos.push({
-            id: Math.floor(Math.random() * 100),
-            title: this.title,
-            completed: false
-        });
-
-        Store.save(this.todos);
+        // this.todos.push({
+        //     id: Math.floor(Math.random() * 100),
+        //     title: this.title,
+        //     completed: false
+        // });
+        console.log(this.todos)
+        // Store.save(this.todos);
     }
 
     editTitle(id, newTitleText) 

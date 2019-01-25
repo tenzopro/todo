@@ -113,30 +113,33 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var Store = function () {
-  var _data = localStorage.getItem("_todos");
-
-  var anyData = function anyData(data) {
-    return data == null ? false : true;
-  };
+  var db = JSON.parse(localStorage.getItem("_todos"));
 
   var getTodos = function getTodos() {
-    if (anyData(_data) === false) {
-      var _id = Math.floor(Math.random() * 100);
-
-      var data = JSON.stringify([{
-        id: _id,
-        title: "You're up & running!",
-        completed: false
-      }]);
-      localStorage.setItem('_todos', data);
-      return JSON.parse(localStorage.getItem("_todos"));
-    } else {
-      return JSON.parse(localStorage.getItem("_todos"));
+    if (anyData(db) == false) {
+      dbInit();
     }
+
+    return db;
   };
 
   var saveData = function saveData(data) {
     localStorage.setItem("_todos", JSON.stringify(data));
+  };
+
+  var dbInit = function dbInit() {
+    var _id = Math.floor(Math.random() * 100);
+
+    var data = JSON.stringify([{
+      id: _id,
+      title: "You're up & running!",
+      completed: false
+    }]);
+    localStorage.setItem('_todos', data);
+  };
+
+  var anyData = function anyData(data) {
+    return data == null || data == undefined ? false : true;
   };
 
   return {
@@ -258,13 +261,12 @@ function () {
   }, {
     key: "storeState",
     value: function storeState() {
-      this.todos.push({
-        id: Math.floor(Math.random() * 100),
-        title: this.title,
-        completed: false
-      });
-
-      _Store.default.save(this.todos);
+      // this.todos.push({
+      //     id: Math.floor(Math.random() * 100),
+      //     title: this.title,
+      //     completed: false
+      // });
+      console.log(this.todos); // Store.save(this.todos);
     }
   }, {
     key: "editTitle",
@@ -921,7 +923,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49294" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57439" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

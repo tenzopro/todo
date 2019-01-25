@@ -1,6 +1,6 @@
 # todo
 NOTE: This project is on-going - i work on it in my spare time & as such expect bugs or missing feaures. But these will be addressed as we progress.
-# -----------------------------------
+# 
 
 Personal project dedicated to learning and working with vanilla javascript to achieve small things which built to big ones. Criticism, contributions &/or suggestions welcome. 
 

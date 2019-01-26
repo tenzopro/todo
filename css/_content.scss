@@ -9,7 +9,6 @@ body
         #content 
         {
             width: 100%;
-            // border: 1px solid grey;
             padding: 10px;
 
             h1 {
@@ -20,6 +19,7 @@ body
                 padding: 5px;
                 margin-bottom: 20px;
             }
+
             #form 
             {
                 padding: 0 10px 0 0 !important;
@@ -36,7 +36,6 @@ body
 
             div#app 
             {
-
                 #list-items 
                 {
                     width: 100% !important;
@@ -46,6 +45,7 @@ body
                     .true {
                         text-decoration: line-through;
                     }
+
                     tr {
                         width: 100%;
                         background-color: $light-grey;
@@ -53,8 +53,6 @@ body
 
                         td {
                             padding: 5px;
-                            // border: 1px solid $light-grey;
-                            // border: 
                             
                             input {
                                 padding: 3px;

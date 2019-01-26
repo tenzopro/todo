@@ -37,16 +37,39 @@ body #container #content {
   width: 100%;
   padding: 10px;
 }
-body #container #content h1 {
+body #container #content header {
   text-align: center;
+  margin-bottom: 20px;
+}
+body #container #content header h1 {
+  font-size: 0.9em;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+body #container #content header h1, body #container #content header img {
+  padding: 0;
+  margin: 0;
 }
 body #container #content #display-alerts {
-  padding: 5px;
   margin-bottom: 20px;
+}
+body #container #content #display-alerts ul {
+  padding: 15px;
+  background-color: #ffe6ea;
+  border-left: 6px solid #ffc0cb;
+}
+body #container #content #display-alerts ul li {
+  margin-left: 15px;
 }
 body #container #content #form {
   padding: 0 10px 0 0 !important;
   margin-bottom: 20px;
+}
+body #container #content #form small {
+  font-size: 0.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #bfbfbf;
 }
 body #container #content #form input#new-todo {
   width: 100%;
@@ -54,6 +77,9 @@ body #container #content #form input#new-todo {
   font-size: 1.5em;
   margin-bottom: 20px;
   margin: 0 auto;
+}
+body #container #content div#app {
+  margin-bottom: 20px;
 }
 body #container #content div#app #list-items {
   width: 100% !important;
@@ -80,6 +106,36 @@ body #container #content div#app #list-items tr td span {
 body #container #content div#app #list-items tr td button {
   border: none;
   float: right;
+  background: #f2f2f2;
+  font-weight: bold;
+  color: #bfbfbf;
+}
+body #container #content div#app #list-items tr td button:hover {
+  cursor: pointer;
+}
+body #container #content footer {
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid #f2f2f2;
+  padding-top: 5px;
+}
+body #container #content footer #all-checkbox small {
+  font-size: 0.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+body #container #content footer #instruction {
+  padding-left: 20px;
+}
+body #container #content footer #instruction small {
+  font-size: 0.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+body #container #content footer #item-count small {
+  font-size: 0.5em;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 body {

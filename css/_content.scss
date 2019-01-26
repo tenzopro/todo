@@ -11,19 +11,49 @@ body
             width: 100%;
             padding: 10px;
 
-            h1 {
+            header 
+            {
                 text-align: center;
+                margin-bottom: 20px;
+
+                h1 {
+                    font-size: .9em;
+                    font-weight: 500;
+                    letter-spacing: 1px;
+                }
+
+                h1, img {
+                    padding: 0;
+                    margin: 0;
+                }
             }
 
             #display-alerts {
-                padding: 5px;
+                
                 margin-bottom: 20px;
+                
+                ul {
+                    padding: 15px;
+                    background-color: #ffe6ea;
+                    border-left: 6px solid #ffc0cb;
+
+                    li {
+                        margin-left: 15px;
+                    }
+                }
             }
 
             #form 
             {
                 padding: 0 10px 0 0 !important;
                 margin-bottom: 20px;
+
+                small {
+                    font-size: .5em;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    color: $medium-grey;
+                }
 
                 input#new-todo {
                     width: 100%;
@@ -36,6 +66,7 @@ body
 
             div#app 
             {
+                margin-bottom: 20px;
                 #list-items 
                 {
                     width: 100% !important;
@@ -63,8 +94,48 @@ body
                             button {
                                 border: none;
                                 float: right;
+                                background: $light-grey;
+                                font-weight: bold;
+                                color: $medium-grey;
+                            }
+
+                            button:hover {
+                                cursor: pointer;
                             }
                         }
+                    }
+                }
+            }
+
+            footer 
+            {
+                display: flex;
+                flex-direction: row;
+                border-top: 1px solid $light-grey;
+                padding-top: 5px;
+
+                #all-checkbox {
+                    small {
+                        font-size: .5em;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    }
+                }
+                #instruction 
+                {
+                    padding-left: 20px;
+
+                    small {
+                        font-size: .5em;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                    }
+                }
+                #item-count {
+                    small {
+                        font-size: .5em;
+                        font-weight: bold;
+                        text-transform: uppercase;
                     }
                 }
             }

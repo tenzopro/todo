@@ -12,19 +12,36 @@
     <div id="container">
 
         <div id="content" >
-
-            <h1>todo app</h1>
+            
+            <header>
+                <img src="./img/todo.png" width="30" />
+                <h1>todo app</h1>
+            </header>
 
             <!-- alerts/messages display -->
             <section id="display-alerts"></section>
             
             <!-- form input -->
             <section id="form">
+                <small>* Enter text & press Enter key [ ↵ ]</small>
                 <input type="text" max-length="35" name="title" id="new-todo" placeholder="enter new todo" />
             </section>
 
             <!-- dynamic content loads here -->
             <div id="app"></div>
+
+            <footer>
+                <div id="all-checkbox">
+                    <input type="checkbox" id="tick-untick-all" />
+                    <small>Tick / Untick all</small>
+                </div>
+                <div id="instruction" style="flex-basis: 250px">
+                    <small>* Double-click on title to edit</small>
+                </div>
+                <div id="item-count">
+                    <small>0 items</small>
+                </div>
+            </footer>
 
         </div>
     </div>

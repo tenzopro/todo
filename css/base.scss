@@ -1,0 +1,9 @@
+// base.scss
+
+@import 'reset';
+@import 'alerts';
+@import 'content';
+
+body {
+  font: 100% Helvetica, sans-serif;
+}

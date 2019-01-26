@@ -5,39 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>todo app</title>
-    <style>
-
-        section, #new-todo {
-            margin-bottom: 20px;
-        }
-
-        .true {
-            text-decoration: line-through;
-        }
-        ul {
-            padding: 0 0;
-            margin: 0 0;
-        }
-        li {
-            list-style: none;
-        }
-
-        .checkbox, .todo-title, .delete {
-            margin: 5px;
-        }
-
-    </style>
+    <link rel="stylesheet" href="css/base.scss">
 </head>
 <body>
-    <h1>todo app</h1>
-
+    
     <div id="container">
 
-        <section id="display-alerts"></section>
+        <div id="content" >
 
-        <input type="text" name="title" id="new-todo" placeholder="enter new todo" />
-        <button id="btn">+</button>
-        <div id="app"></div>
+            <h1>todo app</h1>
+
+            <section id="display-alerts"></section>
+    
+            <section id="form">
+                <input type="text" name="title" id="new-todo" placeholder="enter new todo" />
+                <!-- <button id="btn">+</button> -->
+            </section>
+
+            <div id="app"></div>
+        </div>
     </div>
     
 

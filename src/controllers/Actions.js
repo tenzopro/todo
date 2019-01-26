@@ -12,10 +12,12 @@ import Errors from '../lib/Errors';
 const todoSubmit = () => {
 
     // query button tag
-    const btn = document.getElementById("btn");
+    // const btn = document.getElementById("btn");
+    const _input = document.getElementById("new-todo");
 
     // add event to button tag
-    btn.addEventListener("click", () => {
+    _input.addEventListener("change", (e) => {
+        // console.log(e.target);
         /** 
          * initialize variables 
          * **/
@@ -23,7 +25,7 @@ const todoSubmit = () => {
         // set rules
         const rules = [{ title: 'required|min' }];
         // get input element
-        const _input = document.getElementById("new-todo");
+        // const _input = document.getElementById("new-todo");
         // obtain input name
         const _name = _input.name;
         // obtain input value

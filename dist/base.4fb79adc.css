@@ -1,0 +1,77 @@
+html,
+body,
+div,
+section,
+p,
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+/* This CSS will print because %message-shared is extended. */
+.warning, .error, .success, .message {
+  border: 1px solid #ccc;
+  padding: 10px;
+  color: #333;
+}
+
+.success {
+  border-color: green;
+}
+
+.error {
+  border-color: red;
+}
+
+.warning {
+  border-color: yellow;
+}
+
+body #container {
+  width: 400px !important;
+  padding: 20px;
+  margin: 0 auto !important;
+  background-color: #efefef;
+}
+body #container #content {
+  width: 100%;
+}
+body #container #content h1 {
+  text-align: center;
+}
+body #container #content #display-alerts {
+  padding: 5px;
+  margin-bottom: 20px;
+}
+body #container #content #form input#new-todo {
+  width: 100%;
+  padding: 3px;
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+body #container #content #form button#btn {
+  padding: 0 8px 4px 6px;
+  font-size: 1.2em;
+  background-color: white !important;
+}
+body #container #content div#app #list-items {
+  width: 100%;
+}
+body #container #content div#app #list-items .true {
+  text-decoration: line-through;
+}
+body #container #content div#app #list-items tr td {
+  border-bottom: 1px solid grey;
+  padding: 5px;
+}
+body #container #content div#app #list-items tr td input {
+  padding: 3px;
+}
+body #container #content div#app #list-items tr td button {
+  border: none;
+}
+
+body {
+  font: 100% Helvetica, sans-serif;
+}

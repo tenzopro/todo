@@ -1,0 +1,60 @@
+body {
+    #container {
+        width: 400px !important;
+        padding: 20px;
+        margin: 0 auto !important;
+        background-color: #efefef;
+
+        #content 
+        {
+            width: 100%;
+            h1 {
+                text-align: center;
+            }
+
+            #display-alerts {
+                padding: 5px;
+                margin-bottom: 20px;
+            }
+            #form {
+                input#new-todo {
+                    width: 100%;
+                    padding: 3px;
+                    font-size: 1.2em;
+                    margin-bottom: 20px;
+                }
+                button#btn {
+                    padding: 0 8px 4px 6px;
+                    font-size: 1.2em;
+                    background-color: white !important;
+                }
+            }
+
+            div#app {
+                #list-items 
+                {
+                    width: 100%;
+
+                    .true {
+                        text-decoration: line-through;
+                    }
+                    tr {
+                        td {
+                            border-bottom: 1px solid grey;
+                            padding: 5px;
+                            input {
+                                padding: 3px;
+                            }
+                            span {
+                                
+                            }
+                            button {
+                                border: none;
+                            }
+                        }
+                    }
+                }
+            }
+       }
+    }
+}

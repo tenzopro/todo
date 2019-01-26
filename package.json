@@ -11,5 +11,8 @@
     "url": "yes"
   },
   "author": "Tenzo",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "sass": "^1.16.1"
+  }
 }

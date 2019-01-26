@@ -781,9 +781,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 var todoSubmit = function todoSubmit() {
   // query button tag
-  var btn = document.getElementById("btn"); // add event to button tag
+  // const btn = document.getElementById("btn");
+  var _input = document.getElementById("new-todo"); // add event to button tag
 
-  btn.addEventListener("click", function () {
+
+  _input.addEventListener("change", function (e) {
+    // console.log(e.target);
+
     /** 
      * initialize variables 
      * **/
@@ -791,9 +795,8 @@ var todoSubmit = function todoSubmit() {
     var rules = [{
       title: 'required|min'
     }]; // get input element
-
-    var _input = document.getElementById("new-todo"); // obtain input name
-
+    // const _input = document.getElementById("new-todo");
+    // obtain input name
 
     var _name = _input.name; // obtain input value
 
@@ -924,7 +927,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57439" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57252" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

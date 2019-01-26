@@ -10,14 +10,14 @@ import Errors from '../lib/Errors';
  *  delegate todo persistence
  */
 const todoSubmit = () => {
-
+    
     // query button tag
     // const btn = document.getElementById("btn");
     const _input = document.getElementById("new-todo");
 
     // add event to button tag
     _input.addEventListener("change", (e) => {
-        // console.log(e.target);
+        
         /** 
          * initialize variables 
          * **/
@@ -97,6 +97,7 @@ const removeTodo = () => {
     if(todoList)
     {
         todoList.addEventListener('click', (e) => {
+            
             UI.removeTodo(e.target);
         }, false);
     }

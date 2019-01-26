@@ -389,7 +389,9 @@ function () {
     _classCallCheck(this, UI);
 
     // init todos
-    UI.todos = new _Todo.default(); // get div with id 'app' from index.html
+    UI.todo = new _Todo.default();
+    UI.todos = UI.todo.all();
+    UI.iniFooter(); // get div with id 'app' from index.html
 
     UI.appHook = document.getElementById("app");
     UI.table = document.createElement("table");
@@ -400,10 +402,9 @@ function () {
     key: "showTodos",
     value: function showTodos() {
       // get todos
-      var todos = UI.todos.all();
-
-      if (!todos) {
-        var preText = "\n\t\t\t\t<span>You have no todos yet :)</span><br/><br/>\n\t\t\t\t<small>(Type into box and click on + button)</small>\n\t\t\t";
+      // const todos = UI.todos.all();
+      if (!UI.todos) {
+        var preText = "\n\t\t\t\t<span>You have no todos yet :)</span><br/><br/>\n\t\t\t";
         var p = document.createElement("p");
         p.setAttribute('id', 'pretext');
         p.innerHTML = preText;
@@ -413,7 +414,7 @@ function () {
       //delegate DOM manipulation to showTodo()
 
 
-      todos.map(function (todo) {
+      UI.todos.map(function (todo) {
         return UI.showTodo(todo);
       });
     }
@@ -426,9 +427,11 @@ function () {
   }, {
     key: "showTodo",
     value: function showTodo(todo) {
+      UI.iniFooter();
       /**
        * create table, tr & td elements
        */
+
       var tr = document.createElement("tr");
       var td = document.createElement("td");
       var td1 = document.createElement("td");
@@ -468,12 +471,25 @@ function () {
       UI.appHook.appendChild(UI.table);
     }
   }, {
+    key: "iniFooter",
+    value: function iniFooter() {
+      var itemCount = document.querySelector('#item-count');
+      var instruction = document.querySelector('#instruction');
+      var instructionNote = '* DOUBLE-CLICK ON TITLE TO EDIT';
+      var todoCount = UI.todos.length;
+
+      if (todoCount > 0) {
+        itemCount.childNodes[1].childNodes[0].innerHTML = todoCount;
+        instruction.childNodes[1].innerHTML = instructionNote;
+      }
+    }
+  }, {
     key: "toggleTodo",
     value: function toggleTodo(el) {
       // select only element(s) with 'checkbos' class attrs
       if (el.classList.contains('checkbox')) {
         // update completed property
-        UI.todos.toggleCompleted(el.value); // update the UI
+        UI.todo.toggleCompleted(el.value); // update the UI
 
         el.parentElement.parentElement.classList.toggle("true");
       }
@@ -489,7 +505,7 @@ function () {
           return;
         }
 
-        UI.todos.editTitle(el.id, newTitleText);
+        UI.todo.editTitle(el.id, newTitleText);
         el.innerHTML = newTitleText;
       }
     }
@@ -497,8 +513,12 @@ function () {
     key: "removeTodo",
     value: function removeTodo(el) {
       if (el.classList.contains('delete')) {
-        UI.todos.delete(el.id);
+        UI.todo.delete(el.id);
+        UI.todos = UI.todos.filter(function (todo) {
+          return todo.id == el.id;
+        });
         el.parentElement.parentElement.remove();
+        UI.iniFooter();
       }
     }
     /**
@@ -534,7 +554,7 @@ function () {
       alerts.appendChild(ul);
       setTimeout(function () {
         alerts.remove();
-      }, 3000);
+      }, 5000);
     }
   }]);
 
@@ -786,8 +806,6 @@ var todoSubmit = function todoSubmit() {
 
 
   _input.addEventListener("change", function (e) {
-    // console.log(e.target);
-
     /** 
      * initialize variables 
      * **/

@@ -11,7 +11,10 @@ export default class UI
 	constructor(todos)
 	{
 		// init todos
-		UI.todos = new Todo();
+		UI.todo = new Todo();
+		UI.todos = UI.todo.all();
+
+		UI.iniFooter();
 
 		// get div with id 'app' from index.html
 		UI.appHook = document.getElementById("app");
@@ -22,13 +25,12 @@ export default class UI
     static showTodos() 
     {
 		// get todos
-		const todos = UI.todos.all();
+		// const todos = UI.todos.all();
 
-		if(!todos) 
+		if(!UI.todos) 
 		{
 			const preText = `
 				<span>You have no todos yet :)</span><br/><br/>
-				<small>(Type into box and click on + button)</small>
 			`;
 
 			const p = document.createElement("p");
@@ -40,7 +42,7 @@ export default class UI
 		
 		// iterate through each todo and 
 		//delegate DOM manipulation to showTodo()
-		todos.map(todo => UI.showTodo(todo));
+		UI.todos.map(todo => UI.showTodo(todo));
 	}
 
 	/**
@@ -50,6 +52,7 @@ export default class UI
 	 */
     static showTodo(todo) 
     {
+		UI.iniFooter();
 		/**
 		 * create table, tr & td elements
 		 */
@@ -97,13 +100,27 @@ export default class UI
 		UI.appHook.appendChild(UI.table);
 	}
 
+	static iniFooter()
+	{
+		const itemCount = document.querySelector('#item-count');
+		const instruction = document.querySelector('#instruction');
+		const instructionNote = '* DOUBLE-CLICK ON TITLE TO EDIT';
+		const todoCount = UI.todos.length;
+
+		if(todoCount > 0)
+		{
+			itemCount.childNodes[1].childNodes[0].innerHTML = todoCount;
+			instruction.childNodes[1].innerHTML = instructionNote;
+		}
+	}
+
 	static toggleTodo(el)
 	{
 		// select only element(s) with 'checkbos' class attrs
 		if(el.classList.contains('checkbox'))
 		{
 			// update completed property
-			UI.todos.toggleCompleted(el.value);
+			UI.todo.toggleCompleted(el.value);
 			// update the UI
 			el.parentElement.parentElement.classList.toggle("true");
 		}
@@ -121,7 +138,7 @@ export default class UI
 				return;
 			}
 
-			UI.todos.editTitle(el.id, newTitleText);
+			UI.todo.editTitle(el.id, newTitleText);
 			el.innerHTML = newTitleText;
 		}
 	}
@@ -130,8 +147,10 @@ export default class UI
 	{
 		if(el.classList.contains('delete'))
 		{
-			UI.todos.delete(el.id);
+			UI.todo.delete(el.id);
+			UI.todos = UI.todos.filter(todo => todo.id == el.id );
 			el.parentElement.parentElement.remove();
+			UI.iniFooter();
 		}
 	}
 
@@ -172,6 +191,6 @@ export default class UI
 
 		setTimeout(() => {
 			alerts.remove()
-		}, 3000);
+		}, 5000);
 	}
 }

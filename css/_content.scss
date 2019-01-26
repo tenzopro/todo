@@ -1,13 +1,17 @@
-body {
-    #container {
+body 
+{
+    #container 
+    {
         width: 400px !important;
         padding: 20px;
         margin: 0 auto !important;
-        background-color: #efefef;
 
         #content 
         {
             width: 100%;
+            // border: 1px solid grey;
+            padding: 10px;
+
             h1 {
                 text-align: center;
             }
@@ -16,40 +20,51 @@ body {
                 padding: 5px;
                 margin-bottom: 20px;
             }
-            #form {
+            #form 
+            {
+                padding: 0 10px 0 0 !important;
+                margin-bottom: 20px;
+
                 input#new-todo {
                     width: 100%;
-                    padding: 3px;
-                    font-size: 1.2em;
+                    padding: 3px 3px 3px 5px;
+                    font-size: 1.5em;
                     margin-bottom: 20px;
-                }
-                button#btn {
-                    padding: 0 8px 4px 6px;
-                    font-size: 1.2em;
-                    background-color: white !important;
+                    margin: 0 auto;
                 }
             }
 
-            div#app {
+            div#app 
+            {
+
                 #list-items 
                 {
-                    width: 100%;
+                    width: 100% !important;
+                    margin: 0 auto;
+                    border-collapse: collapse;
 
                     .true {
                         text-decoration: line-through;
                     }
                     tr {
+                        width: 100%;
+                        background-color: $light-grey;
+                        border-bottom: 4px solid white !important;
+
                         td {
-                            border-bottom: 1px solid grey;
                             padding: 5px;
+                            // border: 1px solid $light-grey;
+                            // border: 
+                            
                             input {
                                 padding: 3px;
                             }
                             span {
-                                
+                                text-align: left;
                             }
                             button {
                                 border: none;
+                                float: right;
                             }
                         }
                     }

@@ -156,7 +156,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sortData = exports.mergeObjs = exports.isLessThan = exports.isEmpty = void 0;
+exports.setCheckboxAttrs = exports.setTableRowAttrs = exports.sortData = exports.mergeObjs = exports.isLessThan = exports.isEmpty = void 0;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
@@ -173,7 +173,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
  */
 var isEmpty = function isEmpty() {
   var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  return field === null || field.trim().length === 0 ? true : false;
+  return field === null || field.trim().length === 0 || field === false ? true : false;
 };
 /**
  * checks if field has characters less or equal to 5:
@@ -208,6 +208,30 @@ var sortData = function sortData(data) {
 };
 
 exports.sortData = sortData;
+
+var setCheckboxAttrs = function setCheckboxAttrs(obj, status, checked) {
+  for (var prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      if (status === true) {
+        obj[prop].setAttribute('checked', checked);
+      } else {
+        obj[prop].removeAttribute('checked');
+      }
+    }
+  }
+};
+
+exports.setCheckboxAttrs = setCheckboxAttrs;
+
+var setTableRowAttrs = function setTableRowAttrs(obj, status) {
+  for (var prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      obj[prop].setAttribute('class', status);
+    }
+  }
+};
+
+exports.setTableRowAttrs = setTableRowAttrs;
 },{}],"src/models/abstract/Model.js":[function(require,module,exports) {
 "use strict";
 
@@ -265,6 +289,11 @@ function () {
     key: "save",
     value: function save() {
       this.storeState();
+    }
+  }, {
+    key: "update",
+    value: function update(data) {
+      _Store.default.save(data);
     }
   }, {
     key: "storeState",
@@ -400,7 +429,9 @@ function () {
     UI.todo = new _Todo.default();
     UI.todos = UI.todo.all().sort(function (a, b) {
       return a.title.localeCompare(b.title);
-    }); // get div with id 'app' from index.html
+    }); // checkall flag
+
+    UI.checkAllFlag = true; // get div with id 'app' from index.html
 
     UI.appHook = document.getElementById("app");
     UI.table = document.createElement("table");
@@ -434,6 +465,13 @@ function () {
         return UI.showTodo(todo);
       });
     }
+  }, {
+    key: "setFlag",
+    value: function setFlag(todo) {
+      if (todo.completed === false) {
+        UI.checkAllFlag = false;
+      }
+    }
     /**
      * method responsible for creating new DOM nodes and 
      * assigning todo values to list nodes.
@@ -443,7 +481,9 @@ function () {
   }, {
     key: "showTodo",
     value: function showTodo(todo) {
-      // update footer & its variables
+      // reset flag 
+      UI.setFlag(todo); // update footer & its variables
+
       UI.iniFooter(); // create html elems (tr, td, input, span, button)
 
       var tr = document.createElement("tr");
@@ -452,10 +492,12 @@ function () {
       var td2 = document.createElement("td");
       var input = document.createElement("input");
       var span = document.createElement("span");
-      var btn = document.createElement("button"); // set todo as checked if its completed
+      var btn = document.createElement("button");
 
       if (todo.completed == true) {
-        input.setAttribute('checked', 'checked');
+        // check checkbox input if todo is completed
+        input.setAttribute('checked', 'checked'); // apply a 'true' class
+
         tr.setAttribute('class', todo.completed);
       }
 
@@ -534,9 +576,23 @@ function () {
       }
     }
   }, {
+    key: "checkAll",
+    value: function checkAll(status) {
+      var tableRows = document.querySelector('#list-items').childNodes;
+      var checkBoxes = document.querySelectorAll('.checkbox');
+      var checked = status === true ? 'checked' : false;
+      (0, _Utils.setTableRowAttrs)(tableRows, status, checked);
+      (0, _Utils.setCheckboxAttrs)(checkBoxes, status, checked);
+      UI.todos.map(function (todo) {
+        return todo.completed = status;
+      });
+      UI.todo.update(UI.todos);
+    }
+  }, {
     key: "iniFooter",
     value: function iniFooter() {
       // initialize variables
+      var checkAll = document.querySelector('#tick-untick-all');
       var itemCount = document.querySelector('#item-count');
       var instruction = document.querySelector('#instruction');
       var instructionNote = '* double-click title to edit';
@@ -546,6 +602,12 @@ function () {
 
       if (todoCount > 0) {
         instruction.childNodes[1].innerHTML = instructionNote;
+      }
+
+      if (UI.checkAllFlag === true) {
+        checkAll.setAttribute('checked', true);
+      } else {
+        checkAll.removeAttribute('checked');
       }
     }
     /**
@@ -561,7 +623,7 @@ function () {
       // ensure errorsAray is set
       if (errorArray.length === 0) {
         // stop script if array is empty. log message
-        return console.log('expect error array not to be empty');
+        return console.log('error array empty');
       } // hook to alerts section in index.html
 
 
@@ -578,7 +640,8 @@ function () {
         ul.appendChild(li);
       }); // append the ul tag to allerts div
 
-      alerts.appendChild(ul);
+      alerts.appendChild(ul); // clear msgs after 5 secs
+
       setTimeout(function () {
         alerts.remove();
       }, 5000);
@@ -808,7 +871,7 @@ exports.default = Validation;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.removeTodo = exports.editTodo = exports.toggleCompleted = exports.todoSubmit = void 0;
+exports.checkAll = exports.removeTodo = exports.editTodo = exports.toggleCompleted = exports.todoSubmit = void 0;
 
 var _Todo = _interopRequireDefault(require("../models/Todo"));
 
@@ -923,6 +986,15 @@ var removeTodo = function removeTodo() {
 };
 
 exports.removeTodo = removeTodo;
+
+var checkAll = function checkAll() {
+  var tickAll = document.querySelector('#tick-untick-all');
+  tickAll.addEventListener('click', function (e) {
+    _UI.default.checkAll(e.target.checked);
+  });
+};
+
+exports.checkAll = checkAll;
 },{"../models/Todo":"src/models/Todo.js","../components/UI":"src/components/UI.js","../lib/Validation":"src/lib/Validation.js","../lib/Errors":"src/lib/Errors.js"}],"src/main.js":[function(require,module,exports) {
 "use strict";
 
@@ -944,6 +1016,7 @@ window.document.addEventListener("DOMContentLoaded", function () {
   (0, _Actions.toggleCompleted)();
   (0, _Actions.editTodo)();
   (0, _Actions.removeTodo)();
+  (0, _Actions.checkAll)();
 });
 },{"./components/UI":"src/components/UI.js","./controllers/Actions":"src/controllers/Actions.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -972,7 +1045,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49354" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51432" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

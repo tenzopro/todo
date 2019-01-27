@@ -1,5 +1,5 @@
 import UI from './components/UI';
-import { todoSubmit, toggleCompleted, editTodo, removeTodo } from './controllers/Actions';
+import { todoSubmit, toggleCompleted, editTodo, removeTodo, checkAll } from './controllers/Actions';
 
 // display todos when DOM loads
 window.document.addEventListener("DOMContentLoaded", function() {
@@ -15,6 +15,7 @@ window.document.addEventListener("DOMContentLoaded", function() {
 	toggleCompleted();
 	editTodo();
 	removeTodo();
+	checkAll();
 });
 
 

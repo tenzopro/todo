@@ -34,6 +34,11 @@ export default class Model
         this.storeState();
     }
 
+    update(data)
+    {
+        Store.save(data);
+    }
+
     storeState() 
     {
         this.todos.push({

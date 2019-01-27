@@ -1,5 +1,5 @@
 import Todo from '../models/Todo';
-import { isEmpty } from '../lib/Utils';
+import { isEmpty, setTableRowAttrs, setCheckboxAttrs } from '../lib/Utils';
 
 /**
  * Class responsible for creating dynamic DOM elements:
@@ -12,7 +12,10 @@ export default class UI
 	{
 		// init todos
 		UI.todo = new Todo();
-		UI.todos = UI.todo.all().sort((a, b) => a.title.localeCompare(b.title) );
+		UI.todos = UI.todo.all().sort( (a, b) => a.title.localeCompare(b.title) );
+
+		// checkall flag
+		UI.checkAllFlag = true;
 
 		// get div with id 'app' from index.html
 		UI.appHook = document.getElementById("app");
@@ -50,6 +53,13 @@ export default class UI
 		UI.todos.map(todo => UI.showTodo(todo));
 	}
 
+	static setFlag(todo)
+	{
+		if(todo.completed === false)
+		{
+			UI.checkAllFlag = false;
+		} 
+	}
 	/**
 	 * method responsible for creating new DOM nodes and 
 	 * assigning todo values to list nodes.
@@ -57,6 +67,9 @@ export default class UI
 	 */
     static showTodo(todo) 
     {
+		// reset flag 
+		UI.setFlag(todo)
+		 
 		// update footer & its variables
 		UI.iniFooter();
 
@@ -69,10 +82,12 @@ export default class UI
 		const span = document.createElement("span"); 
 		const btn = document.createElement("button"); 
 
-		// set todo as checked if its completed
 		if(todo.completed == true)
 		{
+			// check checkbox input if todo is completed
 			input.setAttribute('checked', 'checked');
+
+			// apply a 'true' class
 			tr.setAttribute('class', todo.completed);
 		}
 
@@ -163,19 +178,41 @@ export default class UI
 		}
 	}
 
+	static checkAll(status)
+	{
+		const tableRows = document.querySelector('#list-items').childNodes;
+		const checkBoxes = document.querySelectorAll('.checkbox');
+
+		let checked = (status===true) ? 'checked' : false;
+
+		setTableRowAttrs(tableRows, status, checked);
+		setCheckboxAttrs(checkBoxes, status, checked);
+
+		UI.todos.map( todo => todo.completed = status );
+		UI.todo.update(UI.todos);
+	}
+
 	static iniFooter()
 	{
 		// initialize variables
+		const checkAll = document.querySelector('#tick-untick-all');
 		const itemCount = document.querySelector('#item-count');
 		const instruction = document.querySelector('#instruction');
 		const instructionNote = '* double-click title to edit';
 		const todoCount = UI.todos.length;
+		
 		// set values if there are todos (item count & instruction note)
 		itemCount.childNodes[1].childNodes[0].innerHTML = UI.todos.length;
 		
 		if(todoCount > 0)
 		{
 			instruction.childNodes[1].innerHTML = instructionNote;
+		}
+
+		if(UI.checkAllFlag ===true) {
+			checkAll.setAttribute('checked', true) 
+		} else {
+			checkAll.removeAttribute('checked') 
 		}
 	}
 
@@ -190,7 +227,7 @@ export default class UI
 		if(errorArray.length === 0) 
 		{
 			// stop script if array is empty. log message
-			return console.log('expect error array not to be empty');
+			return console.log('error array empty');
 		}
 
 		// hook to alerts section in index.html
@@ -214,6 +251,7 @@ export default class UI
 		// append the ul tag to allerts div
 		alerts.appendChild(ul);
 
+		// clear msgs after 5 secs
 		setTimeout(() => {
 			alerts.remove()
 		}, 5000);

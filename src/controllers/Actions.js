@@ -104,5 +104,14 @@ const removeTodo = () => {
     }
 };
 
+const checkAll = () => {
+    const tickAll = document.querySelector('#tick-untick-all');
+    
+    tickAll.addEventListener('click', (e) => {
+        
+        UI.checkAll(e.target.checked);
+    });
+};
 
-export { todoSubmit, toggleCompleted, editTodo, removeTodo };
+
+export { todoSubmit, toggleCompleted, editTodo, removeTodo, checkAll };

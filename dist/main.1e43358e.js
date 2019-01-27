@@ -394,7 +394,7 @@ function (_Model) {
 }(_Model2.default);
 
 exports.default = Todo;
-},{"./abstract/Model":"src/models/abstract/Model.js"}],"src/components/UIUtility.js":[function(require,module,exports) {
+},{"./abstract/Model":"src/models/abstract/Model.js"}],"src/components/UIBase.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -408,18 +408,17 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var UIUtility =
+var UIBase =
 /*#__PURE__*/
 function () {
-  function UIUtility() {
-    _classCallCheck(this, UIUtility);
+  function UIBase() {
+    _classCallCheck(this, UIBase);
 
     // checkall flag
-    UIUtility.checkAllFlag = true;
-    UIUtility.checkAllFlag = true;
+    UIBase.checkAllFlag = true;
   }
 
-  _createClass(UIUtility, null, [{
+  _createClass(UIBase, null, [{
     key: "sortData",
     value: function sortData(data) {
       return data.sort(function (a, b) {
@@ -439,7 +438,7 @@ function () {
     key: "resetFlag",
     value: function resetFlag(todo) {
       if (todo.completed === false) {
-        UIUtility.checkAllFlag = false;
+        UIBase.checkAllFlag = false;
       }
     }
   }, {
@@ -466,10 +465,10 @@ function () {
     }
   }]);
 
-  return UIUtility;
+  return UIBase;
 }();
 
-exports.default = UIUtility;
+exports.default = UIBase;
 },{}],"src/components/UI.js":[function(require,module,exports) {
 "use strict";
 
@@ -482,7 +481,7 @@ var _Todo = _interopRequireDefault(require("../models/Todo"));
 
 var _Utils = require("../lib/Utils");
 
-var _UIUtility2 = _interopRequireDefault(require("./UIUtility"));
+var _UIBase2 = _interopRequireDefault(require("./UIBase"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -511,8 +510,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  */
 var UI =
 /*#__PURE__*/
-function (_UIUtility) {
-  _inherits(UI, _UIUtility);
+function (_UIBase) {
+  _inherits(UI, _UIBase);
 
   function UI(todos) {
     var _this;
@@ -732,10 +731,10 @@ function (_UIUtility) {
   }]);
 
   return UI;
-}(_UIUtility2.default);
+}(_UIBase2.default);
 
 exports.default = UI;
-},{"../models/Todo":"src/models/Todo.js","../lib/Utils":"src/lib/Utils.js","./UIUtility":"src/components/UIUtility.js"}],"src/lib/Errors.js":[function(require,module,exports) {
+},{"../models/Todo":"src/models/Todo.js","../lib/Utils":"src/lib/Utils.js","./UIBase":"src/components/UIBase.js"}],"src/lib/Errors.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

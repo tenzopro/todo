@@ -1,13 +1,13 @@
 import Todo from '../models/Todo';
 import { isEmpty, setTableRowAttrs, setCheckboxAttrs } from '../lib/Utils';
-import UIUtility from './UIUtility';
+import UIBase from './UIBase';
 
 /**
  * Class responsible for creating dynamic DOM elements:
  * todo list, alerts etc
  * ref: https://davidwalsh.name/documentfragment
  */
-export default class UI extends UIUtility
+export default class UI extends UIBase
 {
 	constructor(todos)
 	{

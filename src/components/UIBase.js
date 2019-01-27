@@ -1,11 +1,10 @@
 
-export default class UIUtility 
+export default class UIBase
 {
     constructor()
     {
         // checkall flag
-        UIUtility.checkAllFlag = true;
-        UIUtility.checkAllFlag = true;
+        UIBase.checkAllFlag = true;
     }
 
     static sortData(data)
@@ -26,7 +25,7 @@ export default class UIUtility
 	{
 		if(todo.completed === false)
 		{
-			UIUtility.checkAllFlag = false;
+			UIBase.checkAllFlag = false;
 		} 
     }
     

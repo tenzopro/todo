@@ -41,6 +41,7 @@ export default class UI
 			p.setAttribute('id', 'pretext');
 			p.innerHTML = preText;
 			UI.appHook.appendChild(p);
+
 			return;
 		}
 		
@@ -68,8 +69,12 @@ export default class UI
 		const span = document.createElement("span"); 
 		const btn = document.createElement("button"); 
 
-		// set attributes
-		tr.setAttribute('class', todo.completed);
+		// set todo as checked if its completed
+		if(todo.completed == true)
+		{
+			input.setAttribute('checked', 'checked');
+			tr.setAttribute('class', todo.completed);
+		}
 
 		input.setAttribute('type', 'checkbox'); 
 		input.setAttribute('class', 'checkbox');

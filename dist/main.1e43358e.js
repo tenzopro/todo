@@ -452,9 +452,13 @@ function () {
       var td2 = document.createElement("td");
       var input = document.createElement("input");
       var span = document.createElement("span");
-      var btn = document.createElement("button"); // set attributes
+      var btn = document.createElement("button"); // set todo as checked if its completed
 
-      tr.setAttribute('class', todo.completed);
+      if (todo.completed == true) {
+        input.setAttribute('checked', 'checked');
+        tr.setAttribute('class', todo.completed);
+      }
+
       input.setAttribute('type', 'checkbox');
       input.setAttribute('class', 'checkbox');
       input.setAttribute('value', todo.id);

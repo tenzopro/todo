@@ -22,4 +22,8 @@ const mergeObjs = (objArr, newObj) => {
     return [...newArr, newObj[0]];
 };
 
-export { isEmpty, isLessThan, mergeObjs };
+const sortData = (data) => {
+    return data.sort( (a, b) => a.title.localeCompare(b.title) );
+};
+
+export { isEmpty, isLessThan, mergeObjs, sortData };

@@ -130,12 +130,12 @@ var Store = function () {
   var dbInit = function dbInit() {
     var _id = Math.floor(Math.random() * 100);
 
-    var data = JSON.stringify([{
+    var data = [{
       id: _id,
       title: "You're up & running!",
       completed: false
-    }]);
-    localStorage.setItem('_todos', data);
+    }];
+    saveData(data);
   };
 
   var anyData = function anyData(data) {
@@ -156,7 +156,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.mergeObjs = exports.isLessThan = exports.isEmpty = void 0;
+exports.sortData = exports.mergeObjs = exports.isLessThan = exports.isEmpty = void 0;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
@@ -200,6 +200,14 @@ var mergeObjs = function mergeObjs(objArr, newObj) {
 };
 
 exports.mergeObjs = mergeObjs;
+
+var sortData = function sortData(data) {
+  return data.sort(function (a, b) {
+    return a.title.localeCompare(b.title);
+  });
+};
+
+exports.sortData = sortData;
 },{}],"src/models/abstract/Model.js":[function(require,module,exports) {
 "use strict";
 
@@ -390,21 +398,29 @@ function () {
 
     // init todos
     UI.todo = new _Todo.default();
-    UI.todos = UI.todo.all();
-    UI.iniFooter(); // get div with id 'app' from index.html
+    UI.todos = UI.todo.all().sort(function (a, b) {
+      return a.title.localeCompare(b.title);
+    }); // get div with id 'app' from index.html
 
     UI.appHook = document.getElementById("app");
     UI.table = document.createElement("table");
     UI.table.setAttribute("id", "list-items");
+    UI.iniFooter();
   }
 
   _createClass(UI, null, [{
     key: "showTodos",
     value: function showTodos() {
-      // get todos
-      // const todos = UI.todos.all();
       if (!UI.todos) {
-        var preText = "\n\t\t\t\t<span>You have no todos yet :)</span><br/><br/>\n\t\t\t";
+        /**
+         * If no todos then show theres no todos:
+         */
+        // set notification variable
+        var preText = '<span>You have no todos yet :)</span>'; // 1. create notification element - p tag
+        // 2. set its attributes
+        // 3. append to the parent element
+        // 4. terminate script
+
         var p = document.createElement("p");
         p.setAttribute('id', 'pretext');
         p.innerHTML = preText;
@@ -427,10 +443,8 @@ function () {
   }, {
     key: "showTodo",
     value: function showTodo(todo) {
-      UI.iniFooter();
-      /**
-       * create table, tr & td elements
-       */
+      // update footer & its variables
+      UI.iniFooter(); // create html elems (tr, td, input, span, button)
 
       var tr = document.createElement("tr");
       var td = document.createElement("td");
@@ -438,10 +452,7 @@ function () {
       var td2 = document.createElement("td");
       var input = document.createElement("input");
       var span = document.createElement("span");
-      var btn = document.createElement("button");
-      /**
-       * set attributes 
-       */
+      var btn = document.createElement("button"); // set attributes
 
       tr.setAttribute('class', todo.completed);
       input.setAttribute('type', 'checkbox');
@@ -452,36 +463,19 @@ function () {
       span.innerHTML = todo.title;
       btn.setAttribute('id', todo.id);
       btn.setAttribute('class', 'delete');
-      btn.innerHTML = "X";
-      /**
-       * append children
-       */
+      btn.innerHTML = "X"; //append children to tds
 
       td.prepend(input);
       td1.appendChild(span);
-      td2.appendChild(btn);
+      td2.appendChild(btn); // append tds to tr
+
       tr.appendChild(td);
       tr.appendChild(td1);
-      tr.appendChild(td2);
-      UI.table.appendChild(tr);
-      /**
-       * finally append table to appHook
-       */
+      tr.appendChild(td2); // append tr to table
+
+      UI.table.appendChild(tr); // finally append table to main parent
 
       UI.appHook.appendChild(UI.table);
-    }
-  }, {
-    key: "iniFooter",
-    value: function iniFooter() {
-      var itemCount = document.querySelector('#item-count');
-      var instruction = document.querySelector('#instruction');
-      var instructionNote = '* DOUBLE-CLICK ON TITLE TO EDIT';
-      var todoCount = UI.todos.length;
-
-      if (todoCount > 0) {
-        itemCount.childNodes[1].childNodes[0].innerHTML = todoCount;
-        instruction.childNodes[1].innerHTML = instructionNote;
-      }
     }
   }, {
     key: "toggleTodo",
@@ -497,13 +491,18 @@ function () {
   }, {
     key: "editTodo",
     value: function editTodo(el) {
+      // if parent element has class of one of the 
+      // elements we're looking for in its class list
       if (el.classList.contains('todo-title')) {
-        // edit todo
-        var newTitleText = prompt("Enter new todo title");
+        // prompt user to supply new title text
+        var newTitleText = prompt("Enter new todo title"); // ensure input is not empty
 
         if ((0, _Utils.isEmpty)(newTitleText) == true) {
+          // terminate script if input is empty
           return;
-        }
+        } // otherwise update db 
+        // then also update UI
+
 
         UI.todo.editTitle(el.id, newTitleText);
         el.innerHTML = newTitleText;
@@ -512,13 +511,37 @@ function () {
   }, {
     key: "removeTodo",
     value: function removeTodo(el) {
+      // if parent element has class of one of the 
+      // elements we're looking for in its class list
       if (el.classList.contains('delete')) {
-        UI.todo.delete(el.id);
+        // attempt to delete todo from DB
+        UI.todo.delete(el.id); // update copy of in-memory todos to ensure we retain
+        // consistency by removing the deleted todo from array
+        // or returning all todos except for the just-deleted todo
+        // then save rest back in todos array
+
         UI.todos = UI.todos.filter(function (todo) {
-          return todo.id == el.id;
-        });
-        el.parentElement.parentElement.remove();
+          return todo.id != el.id;
+        }); // update the UI also
+
+        el.parentElement.parentElement.remove(); // ensure the stats on footer reflect this change
+
         UI.iniFooter();
+      }
+    }
+  }, {
+    key: "iniFooter",
+    value: function iniFooter() {
+      // initialize variables
+      var itemCount = document.querySelector('#item-count');
+      var instruction = document.querySelector('#instruction');
+      var instructionNote = '* double-click title to edit';
+      var todoCount = UI.todos.length; // set values if there are todos (item count & instruction note)
+
+      itemCount.childNodes[1].childNodes[0].innerHTML = UI.todos.length;
+
+      if (todoCount > 0) {
+        instruction.childNodes[1].innerHTML = instructionNote;
       }
     }
     /**
@@ -945,7 +968,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49278" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49354" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

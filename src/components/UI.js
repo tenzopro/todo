@@ -12,27 +12,31 @@ export default class UI
 	{
 		// init todos
 		UI.todo = new Todo();
-		UI.todos = UI.todo.all();
-
-		UI.iniFooter();
+		UI.todos = UI.todo.all().sort((a, b) => a.title.localeCompare(b.title) );
 
 		// get div with id 'app' from index.html
 		UI.appHook = document.getElementById("app");
 		UI.table = document.createElement("table");
 		UI.table.setAttribute("id", "list-items");
+
+		UI.iniFooter();
 	}
 
     static showTodos() 
     {
-		// get todos
-		// const todos = UI.todos.all();
-
 		if(!UI.todos) 
 		{
-			const preText = `
-				<span>You have no todos yet :)</span><br/><br/>
-			`;
+			/**
+			 * If no todos then show theres no todos:
+			 */
 
+			// set notification variable
+			const preText = '<span>You have no todos yet :)</span>';
+
+			// 1. create notification element - p tag
+			// 2. set its attributes
+			// 3. append to the parent element
+			// 4. terminate script
 			const p = document.createElement("p");
 			p.setAttribute('id', 'pretext');
 			p.innerHTML = preText;
@@ -52,10 +56,10 @@ export default class UI
 	 */
     static showTodo(todo) 
     {
+		// update footer & its variables
 		UI.iniFooter();
-		/**
-		 * create table, tr & td elements
-		 */
+
+		// create html elems (tr, td, input, span, button)
 		const tr = document.createElement("tr");
 		const td = document.createElement("td");
 		const td1 = document.createElement("td");
@@ -64,9 +68,7 @@ export default class UI
 		const span = document.createElement("span"); 
 		const btn = document.createElement("button"); 
 
-		/**
-		 * set attributes 
-		 */
+		// set attributes
 		tr.setAttribute('class', todo.completed);
 
 		input.setAttribute('type', 'checkbox'); 
@@ -81,37 +83,21 @@ export default class UI
 		btn.setAttribute('class', 'delete');
 		btn.innerHTML = "X";
 		
-		/**
-		 * append children
-		 */
+		//append children to tds
 		td.prepend(input);
 		td1.appendChild(span);
 		td2.appendChild(btn);
 		
+		// append tds to tr
 		tr.appendChild(td);
 		tr.appendChild(td1);
 		tr.appendChild(td2);
 
+		// append tr to table
 		UI.table.appendChild(tr);
 
-		/**
-		 * finally append table to appHook
-		 */
+		// finally append table to main parent
 		UI.appHook.appendChild(UI.table);
-	}
-
-	static iniFooter()
-	{
-		const itemCount = document.querySelector('#item-count');
-		const instruction = document.querySelector('#instruction');
-		const instructionNote = '* DOUBLE-CLICK ON TITLE TO EDIT';
-		const todoCount = UI.todos.length;
-
-		if(todoCount > 0)
-		{
-			itemCount.childNodes[1].childNodes[0].innerHTML = todoCount;
-			instruction.childNodes[1].innerHTML = instructionNote;
-		}
 	}
 
 	static toggleTodo(el)
@@ -128,16 +114,22 @@ export default class UI
 
 	static editTodo(el) 
 	{
+		// if parent element has class of one of the 
+		// elements we're looking for in its class list
 		if(el.classList.contains('todo-title'))
 		{
-			// edit todo
+			// prompt user to supply new title text
 			const newTitleText = prompt("Enter new todo title");
 
+			// ensure input is not empty
 			if(isEmpty(newTitleText) == true) 
 			{
+				// terminate script if input is empty
 				return;
 			}
 
+			// otherwise update db 
+			// then also update UI
 			UI.todo.editTitle(el.id, newTitleText);
 			el.innerHTML = newTitleText;
 		}
@@ -145,12 +137,40 @@ export default class UI
 
 	static removeTodo(el) 
 	{
+		// if parent element has class of one of the 
+		// elements we're looking for in its class list
 		if(el.classList.contains('delete'))
 		{
+			// attempt to delete todo from DB
 			UI.todo.delete(el.id);
-			UI.todos = UI.todos.filter(todo => todo.id == el.id );
+
+			// update copy of in-memory todos to ensure we retain
+			// consistency by removing the deleted todo from array
+			// or returning all todos except for the just-deleted todo
+			// then save rest back in todos array
+			UI.todos = UI.todos.filter(todo => todo.id != el.id );
+
+			// update the UI also
 			el.parentElement.parentElement.remove();
+
+			// ensure the stats on footer reflect this change
 			UI.iniFooter();
+		}
+	}
+
+	static iniFooter()
+	{
+		// initialize variables
+		const itemCount = document.querySelector('#item-count');
+		const instruction = document.querySelector('#instruction');
+		const instructionNote = '* double-click title to edit';
+		const todoCount = UI.todos.length;
+		// set values if there are todos (item count & instruction note)
+		itemCount.childNodes[1].childNodes[0].innerHTML = UI.todos.length;
+		
+		if(todoCount > 0)
+		{
+			instruction.childNodes[1].innerHTML = instructionNote;
 		}
 	}
 

@@ -17,10 +17,10 @@ const Store = (function() {
 
     const dbInit = () => {
         const _id = Math.floor(Math.random() * 100);
-        const data = JSON.stringify([
+        const data = [
             { id: _id, title: "You're up & running!", completed: false }
-        ]);
-        localStorage.setItem('_todos', data);
+        ];
+        saveData(data);
     };
 
     const anyData = (data) => {

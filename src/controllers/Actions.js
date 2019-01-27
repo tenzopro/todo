@@ -94,6 +94,7 @@ const removeTodo = () => {
 
     // selectlist item wrapper
     const todoList = document.querySelector('#list-items');
+    
     if(todoList)
     {
         todoList.addEventListener('click', (e) => {

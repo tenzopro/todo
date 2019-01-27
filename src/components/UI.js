@@ -1,21 +1,21 @@
 import Todo from '../models/Todo';
 import { isEmpty, setTableRowAttrs, setCheckboxAttrs } from '../lib/Utils';
+import UIUtility from './UIUtility';
 
 /**
  * Class responsible for creating dynamic DOM elements:
  * todo list, alerts etc
  * ref: https://davidwalsh.name/documentfragment
  */
-export default class UI 
+export default class UI extends UIUtility
 {
 	constructor(todos)
 	{
+		super()
+
 		// init todos
 		UI.todo = new Todo();
 		UI.todos = UI.todo.all().sort( (a, b) => a.title.localeCompare(b.title) );
-
-		// checkall flag
-		UI.checkAllFlag = true;
 
 		// get div with id 'app' from index.html
 		UI.appHook = document.getElementById("app");
@@ -53,13 +53,6 @@ export default class UI
 		UI.todos.map(todo => UI.showTodo(todo));
 	}
 
-	static setFlag(todo)
-	{
-		if(todo.completed === false)
-		{
-			UI.checkAllFlag = false;
-		} 
-	}
 	/**
 	 * method responsible for creating new DOM nodes and 
 	 * assigning todo values to list nodes.
@@ -68,7 +61,7 @@ export default class UI
     static showTodo(todo) 
     {
 		// reset flag 
-		UI.setFlag(todo)
+		UI.resetFlag(todo)
 		 
 		// update footer & its variables
 		UI.iniFooter();
@@ -185,8 +178,8 @@ export default class UI
 
 		let checked = (status===true) ? 'checked' : false;
 
-		setTableRowAttrs(tableRows, status, checked);
-		setCheckboxAttrs(checkBoxes, status, checked);
+		UI.setTableRowAttrs(tableRows, status, checked);
+		UI.setCheckboxAttrs(checkBoxes, status, checked);
 
 		UI.todos.map( todo => todo.completed = status );
 		UI.todo.update(UI.todos);
@@ -195,7 +188,7 @@ export default class UI
 	static iniFooter()
 	{
 		// initialize variables
-		const checkAll = document.querySelector('#tick-untick-all');
+		const checkAllElem = document.querySelector('#tick-untick-all');
 		const itemCount = document.querySelector('#item-count');
 		const instruction = document.querySelector('#instruction');
 		const instructionNote = '* double-click title to edit';
@@ -209,11 +202,7 @@ export default class UI
 			instruction.childNodes[1].innerHTML = instructionNote;
 		}
 
-		if(UI.checkAllFlag ===true) {
-			checkAll.setAttribute('checked', true) 
-		} else {
-			checkAll.removeAttribute('checked') 
-		}
+		UI.resetCheckAll(checkAllElem, UI.checkAllFlag);
 	}
 
 

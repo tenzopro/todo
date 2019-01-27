@@ -394,7 +394,83 @@ function (_Model) {
 }(_Model2.default);
 
 exports.default = Todo;
-},{"./abstract/Model":"src/models/abstract/Model.js"}],"src/components/UI.js":[function(require,module,exports) {
+},{"./abstract/Model":"src/models/abstract/Model.js"}],"src/components/UIUtility.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var UIUtility =
+/*#__PURE__*/
+function () {
+  function UIUtility() {
+    _classCallCheck(this, UIUtility);
+
+    // checkall flag
+    UIUtility.checkAllFlag = true;
+    UIUtility.checkAllFlag = true;
+  }
+
+  _createClass(UIUtility, null, [{
+    key: "sortData",
+    value: function sortData(data) {
+      return data.sort(function (a, b) {
+        return a.title.localeCompare(b.title);
+      });
+    }
+  }, {
+    key: "resetCheckAll",
+    value: function resetCheckAll(element, flag) {
+      if (flag === true) {
+        element.setAttribute('checked', true);
+      } else {
+        element.removeAttribute('checked');
+      }
+    }
+  }, {
+    key: "resetFlag",
+    value: function resetFlag(todo) {
+      if (todo.completed === false) {
+        UIUtility.checkAllFlag = false;
+      }
+    }
+  }, {
+    key: "setCheckboxAttrs",
+    value: function setCheckboxAttrs(obj, status, checked) {
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          if (status === true) {
+            obj[prop].setAttribute('checked', checked);
+          } else {
+            obj[prop].removeAttribute('checked');
+          }
+        }
+      }
+    }
+  }, {
+    key: "setTableRowAttrs",
+    value: function setTableRowAttrs(obj, status) {
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          obj[prop].setAttribute('class', status);
+        }
+      }
+    }
+  }]);
+
+  return UIUtility;
+}();
+
+exports.default = UIUtility;
+},{}],"src/components/UI.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -406,13 +482,27 @@ var _Todo = _interopRequireDefault(require("../models/Todo"));
 
 var _Utils = require("../lib/Utils");
 
+var _UIUtility2 = _interopRequireDefault(require("./UIUtility"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 /**
  * Class responsible for creating dynamic DOM elements:
@@ -421,22 +511,26 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  */
 var UI =
 /*#__PURE__*/
-function () {
+function (_UIUtility) {
+  _inherits(UI, _UIUtility);
+
   function UI(todos) {
+    var _this;
+
     _classCallCheck(this, UI);
 
-    // init todos
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(UI).call(this)); // init todos
+
     UI.todo = new _Todo.default();
     UI.todos = UI.todo.all().sort(function (a, b) {
       return a.title.localeCompare(b.title);
-    }); // checkall flag
-
-    UI.checkAllFlag = true; // get div with id 'app' from index.html
+    }); // get div with id 'app' from index.html
 
     UI.appHook = document.getElementById("app");
     UI.table = document.createElement("table");
     UI.table.setAttribute("id", "list-items");
     UI.iniFooter();
+    return _this;
   }
 
   _createClass(UI, null, [{
@@ -465,13 +559,6 @@ function () {
         return UI.showTodo(todo);
       });
     }
-  }, {
-    key: "setFlag",
-    value: function setFlag(todo) {
-      if (todo.completed === false) {
-        UI.checkAllFlag = false;
-      }
-    }
     /**
      * method responsible for creating new DOM nodes and 
      * assigning todo values to list nodes.
@@ -482,7 +569,7 @@ function () {
     key: "showTodo",
     value: function showTodo(todo) {
       // reset flag 
-      UI.setFlag(todo); // update footer & its variables
+      UI.resetFlag(todo); // update footer & its variables
 
       UI.iniFooter(); // create html elems (tr, td, input, span, button)
 
@@ -581,8 +668,8 @@ function () {
       var tableRows = document.querySelector('#list-items').childNodes;
       var checkBoxes = document.querySelectorAll('.checkbox');
       var checked = status === true ? 'checked' : false;
-      (0, _Utils.setTableRowAttrs)(tableRows, status, checked);
-      (0, _Utils.setCheckboxAttrs)(checkBoxes, status, checked);
+      UI.setTableRowAttrs(tableRows, status, checked);
+      UI.setCheckboxAttrs(checkBoxes, status, checked);
       UI.todos.map(function (todo) {
         return todo.completed = status;
       });
@@ -592,7 +679,7 @@ function () {
     key: "iniFooter",
     value: function iniFooter() {
       // initialize variables
-      var checkAll = document.querySelector('#tick-untick-all');
+      var checkAllElem = document.querySelector('#tick-untick-all');
       var itemCount = document.querySelector('#item-count');
       var instruction = document.querySelector('#instruction');
       var instructionNote = '* double-click title to edit';
@@ -604,11 +691,7 @@ function () {
         instruction.childNodes[1].innerHTML = instructionNote;
       }
 
-      if (UI.checkAllFlag === true) {
-        checkAll.setAttribute('checked', true);
-      } else {
-        checkAll.removeAttribute('checked');
-      }
+      UI.resetCheckAll(checkAllElem, UI.checkAllFlag);
     }
     /**
      * displays errors when called
@@ -649,10 +732,10 @@ function () {
   }]);
 
   return UI;
-}();
+}(_UIUtility2.default);
 
 exports.default = UI;
-},{"../models/Todo":"src/models/Todo.js","../lib/Utils":"src/lib/Utils.js"}],"src/lib/Errors.js":[function(require,module,exports) {
+},{"../models/Todo":"src/models/Todo.js","../lib/Utils":"src/lib/Utils.js","./UIUtility":"src/components/UIUtility.js"}],"src/lib/Errors.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

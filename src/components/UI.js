@@ -1,5 +1,5 @@
 import Todo from '../models/Todo';
-import { isEmpty, setTableRowAttrs, setCheckboxAttrs } from '../lib/Utils';
+import { isEmpty } from '../lib/Utils';
 import UIBase from './UIBase';
 
 /**
@@ -204,7 +204,6 @@ export default class UI extends UIBase
 
 		UI.resetCheckAll(checkAllElem, UI.checkAllFlag);
 	}
-
 
 	/**
 	 * displays errors when called

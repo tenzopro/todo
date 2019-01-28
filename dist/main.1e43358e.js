@@ -156,7 +156,7 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setCheckboxAttrs = exports.setTableRowAttrs = exports.sortData = exports.mergeObjs = exports.isLessThan = exports.isEmpty = void 0;
+exports.sortData = exports.mergeObjs = exports.isLessThan = exports.isEmpty = void 0;
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
@@ -208,30 +208,6 @@ var sortData = function sortData(data) {
 };
 
 exports.sortData = sortData;
-
-var setCheckboxAttrs = function setCheckboxAttrs(obj, status, checked) {
-  for (var prop in obj) {
-    if (obj.hasOwnProperty(prop)) {
-      if (status === true) {
-        obj[prop].setAttribute('checked', checked);
-      } else {
-        obj[prop].removeAttribute('checked');
-      }
-    }
-  }
-};
-
-exports.setCheckboxAttrs = setCheckboxAttrs;
-
-var setTableRowAttrs = function setTableRowAttrs(obj, status) {
-  for (var prop in obj) {
-    if (obj.hasOwnProperty(prop)) {
-      obj[prop].setAttribute('class', status);
-    }
-  }
-};
-
-exports.setTableRowAttrs = setTableRowAttrs;
 },{}],"src/models/abstract/Model.js":[function(require,module,exports) {
 "use strict";
 

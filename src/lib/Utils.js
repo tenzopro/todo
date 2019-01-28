@@ -26,34 +26,4 @@ const sortData = (data) => {
     return data.sort( (a, b) => a.title.localeCompare(b.title) );
 };
 
-const setCheckboxAttrs = (obj, status, checked) => {
-    
-    for(let prop in obj)
-    {
-        if (obj.hasOwnProperty(prop))
-        { 
-            if(status===true) 
-            {
-                obj[prop].setAttribute('checked', checked);
-            }
-            else 
-            {
-                obj[prop].removeAttribute('checked');
-            }
-        }
-    }
-};
-
-const setTableRowAttrs = (obj, status) => {
-    
-    for(let prop in obj)
-    {
-        if (obj.hasOwnProperty(prop))
-        { 
-            obj[prop].setAttribute('class', status);
-        }
-    }
-};
-
-
-export { isEmpty, isLessThan, mergeObjs, sortData, setTableRowAttrs, setCheckboxAttrs };
+export { isEmpty, isLessThan, mergeObjs, sortData };

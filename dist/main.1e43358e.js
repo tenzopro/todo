@@ -499,7 +499,13 @@ function (_UIBase) {
     UI.todo = new _Todo.default();
     UI.todos = UI.todo.all().sort(function (a, b) {
       return a.title.localeCompare(b.title);
-    }); // get div with id 'app' from index.html
+    });
+
+    if (UI.todos.length == 0) {
+      // checkall flag
+      _UIBase2.default.checkAllFlag = false;
+    } // get div with id 'app' from index.html
+
 
     UI.appHook = document.getElementById("app");
     UI.table = document.createElement("table");
@@ -593,7 +599,13 @@ function (_UIBase) {
         // update completed property
         UI.todo.toggleCompleted(el.value); // update the UI
 
-        el.parentElement.parentElement.classList.toggle("true");
+        el.parentElement.parentElement.classList.toggle("true"); // if one of todos is unchecked 
+
+        if (el.checked == false) {
+          // then uncheck 'check all' checkbox
+          var tickAll = document.querySelector('#tick-untick-all');
+          tickAll.checked = false;
+        }
       }
     }
   }, {
@@ -639,7 +651,7 @@ function (_UIBase) {
     }
   }, {
     key: "checkAll",
-    value: function checkAll(status) {
+    value: function checkAll(element, status) {
       var tableRows = document.querySelector('#list-items').childNodes;
       var checkBoxes = document.querySelectorAll('.checkbox');
       var checked = status === true ? 'checked' : false;
@@ -648,7 +660,9 @@ function (_UIBase) {
       UI.todos.map(function (todo) {
         return todo.completed = status;
       });
-      UI.todo.update(UI.todos);
+      UI.todo.update(UI.todos); // element.toggle();
+
+      element.classList.toggle('true');
     }
   }, {
     key: "iniFooter",
@@ -1048,7 +1062,7 @@ exports.removeTodo = removeTodo;
 var checkAll = function checkAll() {
   var tickAll = document.querySelector('#tick-untick-all');
   tickAll.addEventListener('click', function (e) {
-    _UI.default.checkAll(e.target.checked);
+    _UI.default.checkAll(tickAll, e.target.checked);
   });
 };
 
@@ -1103,7 +1117,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51432" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51409" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

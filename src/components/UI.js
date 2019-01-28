@@ -11,12 +11,17 @@ export default class UI extends UIBase
 {
 	constructor(todos)
 	{
-		super()
+		super();
 
 		// init todos
 		UI.todo = new Todo();
 		UI.todos = UI.todo.all().sort( (a, b) => a.title.localeCompare(b.title) );
 
+		if(UI.todos.length == 0) 
+		{
+			// checkall flag
+			UIBase.checkAllFlag = false;
+		}
 		// get div with id 'app' from index.html
 		UI.appHook = document.getElementById("app");
 		UI.table = document.createElement("table");
@@ -120,8 +125,17 @@ export default class UI extends UIBase
 		{
 			// update completed property
 			UI.todo.toggleCompleted(el.value);
+
 			// update the UI
 			el.parentElement.parentElement.classList.toggle("true");
+
+			// if one of todos is unchecked 
+			if(el.checked == false) 
+			{
+				// then uncheck 'check all' checkbox
+				const tickAll = document.querySelector('#tick-untick-all');
+				tickAll.checked = false;
+			}
 		}
 	}
 
@@ -171,7 +185,7 @@ export default class UI extends UIBase
 		}
 	}
 
-	static checkAll(status)
+	static checkAll(element, status)
 	{
 		const tableRows = document.querySelector('#list-items').childNodes;
 		const checkBoxes = document.querySelectorAll('.checkbox');
@@ -183,6 +197,8 @@ export default class UI extends UIBase
 
 		UI.todos.map( todo => todo.completed = status );
 		UI.todo.update(UI.todos);
+		// element.toggle();
+		element.classList.toggle('true');
 	}
 
 	static iniFooter()

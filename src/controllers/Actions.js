@@ -109,7 +109,7 @@ const checkAll = () => {
     
     tickAll.addEventListener('click', (e) => {
         
-        UI.checkAll(e.target.checked);
+        UI.checkAll(tickAll, e.target.checked);
     });
 };
 

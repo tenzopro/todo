@@ -173,7 +173,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
  */
 var isEmpty = function isEmpty() {
   var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  return field === null || field.trim().length === 0 || field === false ? true : false;
+
+  if (typeof field !== 'string') {
+    return true;
+  }
+
+  return field == null || field.trim().length == 0 || field == '' ? true : false;
 };
 /**
  * checks if field has characters less or equal to 5:
@@ -185,18 +190,17 @@ var isEmpty = function isEmpty() {
 
 exports.isEmpty = isEmpty;
 
-var isLessThan = function isLessThan() {
-  var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  return field.length <= 5 ? true : false;
+var isLessThan = function isLessThan(field) {
+  return field.length < 6 ? true : false;
 };
 
 exports.isLessThan = isLessThan;
 
 var mergeObjs = function mergeObjs(objArr, newObj) {
   var newArr = objArr.filter(function (obj) {
-    return obj.id !== newObj[0].id;
+    return obj.id !== newObj.id;
   });
-  return [].concat(_toConsumableArray(newArr), [newObj[0]]);
+  return [].concat(_toConsumableArray(newArr), [newObj]);
 };
 
 exports.mergeObjs = mergeObjs;
@@ -295,7 +299,7 @@ function () {
     key: "updateStore",
     value: function updateStore(_todo) {
       // update - merge data and save it to store
-      var newStore = (0, _Utils.mergeObjs)(this.todos, _todo);
+      var newStore = (0, _Utils.mergeObjs)(this.todos, _todo[0]);
 
       _Store.default.save(newStore);
     }

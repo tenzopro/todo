@@ -60,7 +60,7 @@ export default class Model
     updateStore(_todo)
     {
         // update - merge data and save it to store
-        const newStore = mergeObjs(this.todos, _todo);
+        const newStore = mergeObjs(this.todos, _todo[0]);
         Store.save(newStore);
     }
 

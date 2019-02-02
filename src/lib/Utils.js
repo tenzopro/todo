@@ -4,7 +4,11 @@
  * returns @bool true/false
  */
 const isEmpty = (field=null) => {
-    return (field ===null || field.trim().length===0 || field ===false ) ? true : false;
+    if(typeof field !== 'string') 
+    {
+        return true;
+    }
+    return (field == null || field.trim().length==0 || field =='' ) ? true : false;
 };
 
 /**
@@ -13,13 +17,13 @@ const isEmpty = (field=null) => {
  * @param {*} field 
  * returns @bool true/false
  */
-const isLessThan = (field=null) => {
-    return (field.length <= 5) ? true : false;
+const isLessThan = (field) => {
+    return (field.length < 6) ? true : false;
 };
 
 const mergeObjs = (objArr, newObj) => {
-    let newArr = objArr.filter(obj => obj.id !== newObj[0].id);
-    return [...newArr, newObj[0]];
+    let newArr = objArr.filter(obj => obj.id !== newObj.id);
+    return [...newArr, newObj];
 };
 
 const sortData = (data) => {

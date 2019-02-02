@@ -28,23 +28,18 @@ export default class UIBase
 			UIBase.checkAllFlag = false;
 		} 
     }
-    
-    static setCheckboxAttrs(obj, status, checked) 
+
+    static setAttrs(obj, status, checked) 
     {
-        for(let prop in obj)
+        if(typeof checked === 'boolean')
         {
-            if (obj.hasOwnProperty(prop))
-            { 
-                if(status===true) 
-                {
-                    obj[prop].setAttribute('checked', checked);
-                }
-                else 
-                {
-                    obj[prop].removeAttribute('checked');
-                }
-            }
-        }
+            UIBase.unsetCheckbox(obj, status);
+            UIBase.setTableRowAttrs(obj, status);
+        } else
+        {
+            UIBase.setCheckbox(obj, status, checked);
+            UIBase.setTableRowAttrs(obj, status);
+        } 
     }
     
     static setTableRowAttrs(obj, status)
@@ -54,6 +49,28 @@ export default class UIBase
             if (obj.hasOwnProperty(prop))
             { 
                 obj[prop].setAttribute('class', status);
+            }
+        }
+    }
+
+    static setCheckbox(obj, status, checked) 
+    {
+        for(let prop in obj)
+        {
+            if (obj.hasOwnProperty(prop))
+            { 
+                obj[prop].setAttribute('checked', checked);
+            }
+        }
+    }
+
+    static unsetCheckbox(obj, status, checked) 
+    {
+        for(let prop in obj)
+        {
+            if (obj.hasOwnProperty(prop))
+            { 
+                obj[prop].removeAttribute('checked');
             }
         }
     }

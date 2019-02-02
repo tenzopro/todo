@@ -32,6 +32,7 @@ export default class UI extends UIBase
 
     static showTodos() 
     {
+		UI.appHook.innerHTML = '';
 		if(!UI.todos) 
 		{
 			/**
@@ -146,7 +147,7 @@ export default class UI extends UIBase
 		if(el.classList.contains('todo-title'))
 		{
 			// prompt user to supply new title text
-			const newTitleText = prompt("Enter new todo title");
+			const newTitleText = prompt("Enter new todo title", el.innerHTML);
 
 			// ensure input is not empty
 			if(isEmpty(newTitleText) == true) 
@@ -190,10 +191,12 @@ export default class UI extends UIBase
 		const tableRows = document.querySelector('#list-items').childNodes;
 		const checkBoxes = document.querySelectorAll('.checkbox');
 
-		let checked = (status===true) ? 'checked' : false;
+		let checked = (status==true) ? 'checked' : false;
 
-		UI.setTableRowAttrs(tableRows, status, checked);
-		UI.setCheckboxAttrs(checkBoxes, status, checked);
+		// UI.setTableRowAttrs(tableRows, status);
+		// UI.setCheckboxAttrs(checkBoxes, status, checked);
+		UI.setAttrs(tableRows, status, checked);
+		UI.setAttrs(checkBoxes, status, checked);
 
 		UI.todos.map( todo => todo.completed = status );
 		UI.todo.update(UI.todos);

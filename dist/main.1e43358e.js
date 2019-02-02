@@ -418,16 +418,14 @@ function () {
       }
     }
   }, {
-    key: "setCheckboxAttrs",
-    value: function setCheckboxAttrs(obj, status, checked) {
-      for (var prop in obj) {
-        if (obj.hasOwnProperty(prop)) {
-          if (status === true) {
-            obj[prop].setAttribute('checked', checked);
-          } else {
-            obj[prop].removeAttribute('checked');
-          }
-        }
+    key: "setAttrs",
+    value: function setAttrs(obj, status, checked) {
+      if (typeof checked === 'boolean') {
+        UIBase.unsetCheckbox(obj, status);
+        UIBase.setTableRowAttrs(obj, status);
+      } else {
+        UIBase.setCheckbox(obj, status, checked);
+        UIBase.setTableRowAttrs(obj, status);
       }
     }
   }, {
@@ -436,6 +434,24 @@ function () {
       for (var prop in obj) {
         if (obj.hasOwnProperty(prop)) {
           obj[prop].setAttribute('class', status);
+        }
+      }
+    }
+  }, {
+    key: "setCheckbox",
+    value: function setCheckbox(obj, status, checked) {
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          obj[prop].setAttribute('checked', checked);
+        }
+      }
+    }
+  }, {
+    key: "unsetCheckbox",
+    value: function unsetCheckbox(obj, status, checked) {
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          obj[prop].removeAttribute('checked');
         }
       }
     }
@@ -517,6 +533,8 @@ function (_UIBase) {
   _createClass(UI, null, [{
     key: "showTodos",
     value: function showTodos() {
+      UI.appHook.innerHTML = '';
+
       if (!UI.todos) {
         /**
          * If no todos then show theres no todos:
@@ -615,7 +633,7 @@ function (_UIBase) {
       // elements we're looking for in its class list
       if (el.classList.contains('todo-title')) {
         // prompt user to supply new title text
-        var newTitleText = prompt("Enter new todo title"); // ensure input is not empty
+        var newTitleText = prompt("Enter new todo title", el.innerHTML); // ensure input is not empty
 
         if ((0, _Utils.isEmpty)(newTitleText) == true) {
           // terminate script if input is empty
@@ -654,9 +672,11 @@ function (_UIBase) {
     value: function checkAll(element, status) {
       var tableRows = document.querySelector('#list-items').childNodes;
       var checkBoxes = document.querySelectorAll('.checkbox');
-      var checked = status === true ? 'checked' : false;
-      UI.setTableRowAttrs(tableRows, status, checked);
-      UI.setCheckboxAttrs(checkBoxes, status, checked);
+      var checked = status == true ? 'checked' : false; // UI.setTableRowAttrs(tableRows, status);
+      // UI.setCheckboxAttrs(checkBoxes, status, checked);
+
+      UI.setAttrs(tableRows, status, checked);
+      UI.setAttrs(checkBoxes, status, checked);
       UI.todos.map(function (todo) {
         return todo.completed = status;
       });
@@ -1117,7 +1137,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51409" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49558" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

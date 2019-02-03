@@ -27,15 +27,15 @@ const todoSubmit = () => {
         // get input element
         // const _input = document.getElementById("new-todo");
         // obtain input name
-        const _name = _input.name;
+        const name = _input.name;
         // obtain input value
-        const newTodo = _input.value;
+        const newTodo = _input.value.trim();
 
         /** Initialize errors object **/
         new Errors();
 
         // validate input, passing rules and input value.
-        if(Validation.validate(rules, [{ _name: newTodo }])===true)
+        if(Validation.validate(rules, [{ name: newTodo }]))
         {
             const p = document.querySelector('#pretext');
             /**

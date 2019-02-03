@@ -17,7 +17,7 @@ const isEmpty = (field=null) => {
  * @param {*} field 
  * returns @bool true/false
  */
-const isLessThan = (field) => {
+const isLessThan = (field='') => {
     return (field.length < 6) ? true : false;
 };
 

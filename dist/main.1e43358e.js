@@ -190,7 +190,8 @@ var isEmpty = function isEmpty() {
 
 exports.isEmpty = isEmpty;
 
-var isLessThan = function isLessThan(field) {
+var isLessThan = function isLessThan() {
+  var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
   return field.length < 6 ? true : false;
 };
 
@@ -862,7 +863,7 @@ function () {
 
           if (Validation[callback](value, fieldName) === false) {
             /**
-             * if false ie nthere was a problem: no input value 
+             * if false ie there was a problem: no input value 
              * or value infringes some rule then set form validity to false.
              */
             valid = false;
@@ -881,22 +882,16 @@ function () {
 
   }, {
     key: "min",
-    value: function min() {
-      var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      var fieldName = arguments.length > 1 ? arguments[1] : undefined;
+    value: function min(value, fieldName) {
       // initialize validity
-      var valid = null; // check if input is less that a certain minimum
+      var valid = true; // check if input is less that a certain minimum
 
-      if (Validation.lessThan(value._name) === true) {
+      if (Validation.hasLessThan(value.name)) {
         // if so set valid to false: input has less characters ...
         // than required
         valid = false; // set error message to errors class
 
         _Errors.default.set("".concat(fieldName, " must be more than 5 characters."));
-      } else {
-        // otherwise input has right number of characters
-        // set valid to true.
-        valid = true;
       } // return validity
 
 
@@ -911,20 +906,15 @@ function () {
 
   }, {
     key: "required",
-    value: function required() {
-      var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      var fieldName = arguments.length > 1 ? arguments[1] : undefined;
+    value: function required(value, fieldName) {
       // initialize validity
-      var valid = null; // check if input has empty string
+      var valid = true; // check if input has empty string
 
-      if (Validation.empty(value._name) === true) {
+      if (Validation.isEmpty(value.name)) {
         // if so set validity to false: input is empty
         valid = false; // set error message to errors class
 
-        _Errors.default.set("".concat(fieldName, " is reqired"));
-      } else {
-        // otherwise input is valid: set validity to true
-        valid = true;
+        _Errors.default.set("".concat(fieldName, " is required"));
       } // return valid
 
 
@@ -937,10 +927,10 @@ function () {
      */
 
   }, {
-    key: "empty",
-    value: function empty() {
-      var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      return field === null || field.trim().length === 0 ? true : false;
+    key: "isEmpty",
+    value: function isEmpty() {
+      var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+      return value === "" || value.length === 0 ? true : false;
     }
     /**
      * checks if field has characters less or equal to 5:
@@ -950,10 +940,9 @@ function () {
      */
 
   }, {
-    key: "lessThan",
-    value: function lessThan() {
-      var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      return field.length <= 5 ? true : false;
+    key: "hasLessThan",
+    value: function hasLessThan(value) {
+      return value.length <= 5;
     }
   }]);
 
@@ -1002,16 +991,17 @@ var todoSubmit = function todoSubmit() {
     // const _input = document.getElementById("new-todo");
     // obtain input name
 
-    var _name = _input.name; // obtain input value
+    var name = _input.name; // obtain input value
 
-    var newTodo = _input.value;
+    var newTodo = _input.value.trim();
     /** Initialize errors object **/
+
 
     new _Errors.default(); // validate input, passing rules and input value.
 
     if (_Validation.default.validate(rules, [{
-      _name: newTodo
-    }]) === true) {
+      name: newTodo
+    }])) {
       var p = document.querySelector('#pretext');
       /**
        * If Validation passes then...
@@ -1141,7 +1131,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49558" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49237" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

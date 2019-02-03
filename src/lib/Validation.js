@@ -47,7 +47,7 @@ export default class Validation
                 if(Validation[callback](value, fieldName) === false) 
                 { 
                     /**
-                     * if false ie nthere was a problem: no input value 
+                     * if false ie there was a problem: no input value 
                      * or value infringes some rule then set form validity to false.
                      */
                     valid = false;
@@ -66,13 +66,13 @@ export default class Validation
      * @param {*} fieldName 
      * Returns @bool true/false 
      */
-    static min(value=null, fieldName)
+    static min(value, fieldName)
     {
         // initialize validity
-        let valid = null;
+        let valid = true;
 
         // check if input is less that a certain minimum
-        if(Validation.lessThan(value._name) === true) 
+        if(Validation.hasLessThan(value.name)) 
         {
             // if so set valid to false: input has less characters ...
             // than required
@@ -80,13 +80,7 @@ export default class Validation
 
             // set error message to errors class
             Errors.set(`${fieldName} must be more than 5 characters.`);
-        }  
-        else 
-        {
-            // otherwise input has right number of characters
-            // set valid to true.
-            valid = true;
-        }
+        } 
 
         // return validity
         return valid;
@@ -98,24 +92,19 @@ export default class Validation
      * @param {*} fieldName 
      * returns @bool true/false
      */
-    static required(value=null, fieldName)
+    static required(value, fieldName)
     {
         // initialize validity
-        let valid = null;
+        let valid = true;
 
         // check if input has empty string
-        if(Validation.empty(value._name) ===true) 
+        if(Validation.isEmpty(value.name)) 
         {
             // if so set validity to false: input is empty
             valid = false;
             
             // set error message to errors class
-            Errors.set(`${fieldName} is reqired`);
-        } 
-        else 
-        {
-            // otherwise input is valid: set validity to true
-            valid = true;
+            Errors.set(`${fieldName} is required`);
         }
 
         // return valid
@@ -127,9 +116,9 @@ export default class Validation
      * @param {*} field 
      * returns @bool true/false
      */
-    static empty(field=null)
+    static isEmpty(value='')
     {
-        return (field ===null || field.trim().length===0) ? true : false;
+        return (value === "" || value.length === 0) ? true : false;
     }
 
     /**
@@ -138,9 +127,9 @@ export default class Validation
      * @param {*} field 
      * returns @bool true/false
      */
-    static lessThan(field=null)
+    static hasLessThan(value)
     {
-        return (field.length <= 5) ? true : false;
+        return (value.length <= 5);
     }
 
 }

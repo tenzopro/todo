@@ -23,7 +23,7 @@ export default class Validation
      */
     static validate(rules, data) 
     {
-        // set valide to true unless something is wrong within data object
+        // set valid to true unless something is wrong within data object
         let valid = true;
 
         // loop through rules first
@@ -32,7 +32,7 @@ export default class Validation
             // extract rules into callback array.
             let callbacks = rule.title.split('|');
 
-            // loop thru rules array
+            // loop thru array of callback rules 
             callbacks.forEach(callback => {
 
                 /**
@@ -56,7 +56,7 @@ export default class Validation
             });
         });
 
-        // return whether form was valid or not
+        // return whatever valid value is (true or false i.e form is good or not)
         return valid;
     }
 

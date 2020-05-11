@@ -34,11 +34,6 @@ export default class Model
         this.storeState();
     }
 
-    update(data)
-    {
-        Store.save(data);
-    }
-
     storeState() 
     {
         this.todos.push({
@@ -48,6 +43,11 @@ export default class Model
         });
         
         Store.save(this.todos);
+    }
+
+    update(data)
+    {
+        Store.save(data);
     }
 
     editTitle(id, newTitleText) 

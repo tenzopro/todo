@@ -63,7 +63,7 @@ const toggleCompleted = () => {
 
     if(todoList)
     {
-        // add event to it plus its children (propgation)
+        // add event to the node AND all its children (propagation)
         todoList.addEventListener('click', (e) => {
             /**
              * delegate action to UI toggle action -

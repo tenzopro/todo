@@ -272,11 +272,6 @@ function () {
       this.storeState();
     }
   }, {
-    key: "update",
-    value: function update(data) {
-      _Store.default.save(data);
-    }
-  }, {
     key: "storeState",
     value: function storeState() {
       this.todos.push({
@@ -286,6 +281,11 @@ function () {
       });
 
       _Store.default.save(this.todos);
+    }
+  }, {
+    key: "update",
+    value: function update(data) {
+      _Store.default.save(data);
     }
   }, {
     key: "editTitle",
@@ -1131,7 +1131,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49237" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50341" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

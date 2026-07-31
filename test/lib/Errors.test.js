@@ -1,3 +1,4 @@
+// import library to test
 import Errors from '../../src/lib/Errors';
 
 beforeEach(() => {

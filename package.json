@@ -1,0 +1,23 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "vanilla js using es6 & parcel",
+  "main": "main.js",
+  "scripts": {
+    "test": "jest --watch-all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "yes"
+  },
+  "author": "Tenzo",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "sass": "^1.69.5"
+  },
+  "dependencies": {
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6"
+  }
+}

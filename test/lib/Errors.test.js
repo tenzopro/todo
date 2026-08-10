@@ -1,30 +1,27 @@
-// import library to test
 import Errors from '../../src/lib/Errors';
 
-beforeEach(() => {
-    new Errors();
-});
+describe('Errors', () => {
+    beforeEach(() => {
+        new Errors();
+    });
 
-test('must be an object', () => {
-    const errors = Errors.errors;
-    expect(typeof errors).toBe('object');
-    expect(errors).toMatchObject({});
-});
+    test('initializes an empty error collection', () => {
+        expect(Errors.get()).toEqual([]);
+        expect(Errors.errors).toEqual([]);
+    });
 
-test('must be an array', () => {
-    const errors = Errors.get(); 
-    expect(Array.isArray(errors)).toBe(true);
-});
+    test('stores a single error message', () => {
+        Errors.set('error message');
 
-test('set error message', () => {
-    Errors.set('error message');
-    expect(Errors.errors.length).toBe(1);
-});
+        expect(Errors.get()).toEqual(['error message']);
+        expect(Errors.errors).toHaveLength(1);
+    });
 
-test('get error messages', () => {
-    Errors.set('error message one');
-    Errors.set('error message two');
-    const errors = Errors.get();
-    expect(errors).toHaveLength(2);
-    expect(errors.length).toBe(2)
+    test('stores multiple error messages in order', () => {
+        Errors.set('error message one');
+        Errors.set('error message two');
+
+        expect(Errors.get()).toEqual(['error message one', 'error message two']);
+        expect(Errors.errors).toHaveLength(2);
+    });
 });

@@ -1,47 +1,66 @@
 import Validation from '../../src/lib/Validation';
 import Errors from '../../src/lib/Errors';
-import { isLessThan } from '../../src/lib/Utils';
 
-beforeEach(() => {
-    new Errors();
-});
+describe('Validation', () => {
+    beforeEach(() => {
+        new Errors();
+    });
 
-test('lessThan must return boolean', () => {
-    const truthy = Validation.hasLessThan('123');
-    const falsy = Validation.hasLessThan('123456');
+    test('hasLessThan returns true for short values', () => {
+        expect(Validation.hasLessThan('123')).toBe(true);
+        expect(Validation.hasLessThan('12345')).toBe(true);
+    });
 
-    expect(truthy).toBeTruthy();
-    expect(falsy).toBeFalsy();
-});
+    test('hasLessThan returns false for values of length 6 or more', () => {
+        expect(Validation.hasLessThan('123456')).toBe(false);
+        expect(Validation.hasLessThan('long value')).toBe(false);
+    });
 
-test('empty must return boolean', () => {
-    
-    expect(Validation.isEmpty()).toBeTruthy();
-    expect(Validation.isEmpty('')).toBeTruthy();
-    expect(Validation.isEmpty('some value')).toBeFalsy();
-});
+    test('isEmpty returns true for empty values', () => {
+        expect(Validation.isEmpty()).toBe(true);
+        expect(Validation.isEmpty('')).toBe(true);
+    });
 
-test('required must return boolean', () => {
-    const falsey = Validation.required({ name: ''}, 'title');
-    const truthy = Validation.required({ name: 'go to store'}, 'title');
+    test('isEmpty returns false for non-empty values', () => {
+        expect(Validation.isEmpty('some value')).toBe(false);
+    });
 
-    expect(falsey).toEqual(false);
-    expect(truthy).toBe(true);
-});
+    test('required returns false when the field is empty', () => {
+        expect(Validation.required({ name: '' }, 'title')).toBe(false);
+        expect(Errors.get()).toContain('title is required');
+    });
 
-test('min must return boolean', () => {
-    
-    expect(Validation.min({ name: '123456'}, 'title')).toBe(true);
-    expect(Validation.min({ name: '123'}, 'title')).toBe(false);
-});
+    test('required returns true for a populated field', () => {
+        expect(Validation.required({ name: 'go to store' }, 'title')).toBe(true);
+    });
 
-test('validate returns boolean', () => {
-    const rules = [{ title: 'required|min'}]; // good
-    const data = [{ name: 'go to store '}] // good
-    const emptyData = [{ name: ''}] // empty data set - false
-    const lessData = [{ name: '123'}] // less than required min - false
+    test('min returns false when the value is too short', () => {
+        expect(Validation.min({ name: '123' }, 'title')).toBe(false);
+        expect(Errors.get()).toContain('title must be more than 5 characters.');
+    });
 
-    expect(Validation.validate(rules, data)).toBe(true);
-    expect(Validation.validate(rules, emptyData)).toBe(false);
-    expect(Validation.validate(rules, lessData)).toBe(false);
+    test('min returns true when the value meets the minimum length', () => {
+        expect(Validation.min({ name: '123456' }, 'title')).toBe(true);
+    });
+
+    test('validate returns true for valid data', () => {
+        const rules = [{ title: 'required|min' }];
+        const data = [{ name: 'go to store' }];
+
+        expect(Validation.validate(rules, data)).toBe(true);
+    });
+
+    test('validate returns false when a required field is empty', () => {
+        const rules = [{ title: 'required|min' }];
+        const data = [{ name: '' }];
+
+        expect(Validation.validate(rules, data)).toBe(false);
+    });
+
+    test('validate returns false when a value is below the minimum length', () => {
+        const rules = [{ title: 'required|min' }];
+        const data = [{ name: '123' }];
+
+        expect(Validation.validate(rules, data)).toBe(false);
+    });
 });

@@ -1,7 +1,7 @@
-import Todo from '../models/Todo';
-import UI from '../components/UI';
-import Validation from '../lib/Validation';
-import Errors from '../lib/Errors';
+import Todo from '../models/Todo.js';
+import UI from '../components/UI.js';
+import Validation from '../lib/Validation.js';
+import Errors from '../lib/Errors.js';
 
 /**
  * handle button click
@@ -45,8 +45,18 @@ const todoSubmit = () => {
              */
             const todo = new Todo(newTodo);
             todo.save();
+            // Keep the UI's in-memory todo list in sync with the newly saved item
+            // so the footer count and rendered rows reflect the current state immediately.
+            const newTodoItem = {
+                id: Date.now(),
+                title: newTodo,
+                completed: false
+            };
+            UI.todos = [...(UI.todos || []), newTodoItem].sort((a, b) => a.title.localeCompare(b.title));
+            UI.todo = todo;
+            UI.todo.todos = UI.todos;
             (p) ? p.remove() : null;
-            UI.showTodo(todo);
+            UI.showTodo(newTodoItem);
             _input.value = "";
         } else {
             /**
@@ -107,10 +117,13 @@ const removeTodo = () => {
 const checkAll = () => {
     const tickAll = document.querySelector('#tick-untick-all');
     
-    tickAll.addEventListener('click', (e) => {
-        
-        UI.checkAll(tickAll, e.target.checked);
-    });
+    if(tickAll) {
+        // Listen for the checkbox change event so the footer toggle updates
+        // every todo row as soon as the user checks or unchecks it.
+        tickAll.addEventListener('change', (e) => {
+            UI.checkAll(tickAll, e.target.checked);
+        });
+    }
 };
 
 

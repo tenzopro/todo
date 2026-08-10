@@ -1,6 +1,6 @@
-import Todo from '../models/Todo';
-import { isEmpty } from '../lib/Utils';
-import UIBase from './UIBase';
+import Todo from '../models/Todo.js';
+import { isEmpty } from '../lib/Utils.js';
+import UIBase from './UIBase.js';
 
 /**
  * Class responsible for creating dynamic DOM elements:
@@ -66,8 +66,19 @@ export default class UI extends UIBase
 	 */
     static showTodo(todo) 
     {
+		// Normalize the incoming todo payload so render logic can safely use either
+		// a single todo object or a model instance with an .all() collection.
+		const todoData = (todo && Array.isArray(todo.todos))
+			? todo.all().slice(-1)[0]
+			: todo;
+
+		if(todo && Array.isArray(todo.todos)) {
+			// Sync the UI cache from the model-backed collection before rendering.
+			UI.todos = todo.all().slice().sort((a, b) => a.title.localeCompare(b.title));
+		}
+
 		// reset flag 
-		UI.resetFlag(todo)
+		UI.resetFlag(todoData)
 		 
 		// update footer & its variables
 		UI.iniFooter();
@@ -81,24 +92,24 @@ export default class UI extends UIBase
 		const span = document.createElement("span"); 
 		const btn = document.createElement("button"); 
 
-		if(todo.completed == true)
+		if(todoData.completed == true)
 		{
 			// check checkbox input if todo is completed
 			input.setAttribute('checked', 'checked');
 
 			// apply a 'true' class
-			tr.setAttribute('class', todo.completed);
+			tr.setAttribute('class', todoData.completed);
 		}
 
 		input.setAttribute('type', 'checkbox'); 
 		input.setAttribute('class', 'checkbox');
-		input.setAttribute('value', todo.id);
+		input.setAttribute('value', todoData.id);
 
 		span.setAttribute('class', 'todo-title');
-		span.setAttribute('id', todo.id);
-		span.innerHTML = todo.title;
+		span.setAttribute('id', todoData.id);
+		span.innerHTML = todoData.title;
 
-		btn.setAttribute('id', todo.id); 
+		btn.setAttribute('id', todoData.id); 
 		btn.setAttribute('class', 'delete');
 		btn.innerHTML = "X";
 		
@@ -115,8 +126,10 @@ export default class UI extends UIBase
 		// append tr to table
 		UI.table.appendChild(tr);
 
-		// finally append table to main parent
+		// finally append table to main parent and refresh the footer count
+		// so the visible count stays in sync with the list that was just rendered.
 		UI.appHook.appendChild(UI.table);
+		UI.iniFooter();
 	}
 
 	static toggleTodo(el)
@@ -126,9 +139,13 @@ export default class UI extends UIBase
 		{
 			// update completed property
 			UI.todo.toggleCompleted(el.value);
+			// Refresh the cached todo list after the toggle so the footer count
+			// reflects the current completed-state snapshot.
+			UI.todos = UI.todo.all();
 
 			// update the UI
 			el.parentElement.parentElement.classList.toggle("true");
+			UI.iniFooter();
 
 			// if one of todos is unchecked 
 			if(el.checked == false) 
@@ -159,6 +176,9 @@ export default class UI extends UIBase
 			// otherwise update db 
 			// then also update UI
 			UI.todo.editTitle(el.id, newTitleText);
+			// Refresh the in-memory list after an edit so the footer count remains accurate.
+			UI.todos = UI.todo.all();
+			UI.iniFooter();
 			el.innerHTML = newTitleText;
 		}
 	}
@@ -188,21 +208,34 @@ export default class UI extends UIBase
 
 	static checkAll(element, status)
 	{
-		const tableRows = document.querySelector('#list-items').childNodes;
+		const list = document.querySelector('#list-items');
+		const tableRows = list ? list.childNodes : [];
 		const checkBoxes = document.querySelectorAll('.checkbox');
+		const isChecked = Boolean(status);
 
-		let checked = (status==true) ? 'checked' : false;
+		// Apply the footer checkbox state to each visible todo row so the UI
+		// and the underlying todo objects stay in sync when “check all” is used.
+		Array.from(tableRows).forEach(row => {
+			if(row && row.setAttribute) {
+				row.setAttribute('class', isChecked ? 'true' : 'false');
+			}
+		});
 
-		// UI.setTableRowAttrs(tableRows, status);
-		// UI.setCheckboxAttrs(checkBoxes, status, checked);
-		UI.setAttrs(tableRows, status, checked);
-		UI.setAttrs(checkBoxes, status, checked);
+		Array.from(checkBoxes).forEach(checkbox => {
+			// Set the checkbox state explicitly so the row inputs reflect the footer toggle.
+			checkbox.checked = isChecked;
+			checkbox.setAttribute('checked', isChecked ? 'checked' : '');
+		});
 
-		UI.todos.map( todo => todo.completed = status );
+		// Update the cached todo objects so the model-backed state matches the UI selection.
+		UI.todos = (UI.todos || []).map(todo => ({ ...todo, completed: isChecked }));
 		UI.todo.update(UI.todos);
+		UIBase.checkAllFlag = isChecked;
 		
-		// element.toggle();
-		element.classList.toggle('true');
+		if(element) {
+			element.checked = isChecked;
+			element.classList.toggle('true', isChecked);
+		}
 	}
 
 	static iniFooter()
@@ -213,13 +246,19 @@ export default class UI extends UIBase
 		const instruction = document.querySelector('#instruction');
 		const instructionNote = '* double-click title to edit';
 		const todoCount = UI.todos.length;
+		const itemCountValue = itemCount ? itemCount.querySelector('span') : null;
+		const instructionValue = instruction ? instruction.querySelector('small') : null;
 		
 		// set values if there are todos (item count & instruction note)
-		itemCount.childNodes[1].childNodes[0].innerHTML = UI.todos.length;
+		// Update the footer count from the current UI todo cache so it stays in sync
+		// with the rendered list immediately after add/remove/toggle/edit actions.
+		if(itemCountValue) {
+			itemCountValue.innerHTML = UI.todos.length;
+		}
 		
-		if(todoCount > 0)
+		if(todoCount > 0 && instructionValue)
 		{
-			instruction.childNodes[1].innerHTML = instructionNote;
+			instructionValue.innerHTML = instructionNote;
 		}
 
 		UI.resetCheckAll(checkAllElem, UI.checkAllFlag);

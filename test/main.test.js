@@ -16,8 +16,8 @@ jest.mock('../src/controllers/Actions', () => ({
     checkAll: jest.fn(),
 }));
 
-import UI from '../src/components/UI';
-import { todoSubmit, toggleCompleted, editTodo, removeTodo, checkAll } from '../src/controllers/Actions';
+import UI from '../src/components/UI.js';
+import { todoSubmit, toggleCompleted, editTodo, removeTodo, checkAll } from '../src/controllers/Actions.js';
 
 describe('main entry point', () => {
     beforeEach(() => {
@@ -27,12 +27,12 @@ describe('main entry point', () => {
     });
 
     test('initializes UI and controller actions on DOMContentLoaded', () => {
-        require('../src/main');
+        require('../src/begin.js');
 
         document.dispatchEvent(new Event('DOMContentLoaded'));
 
-        const uiModule = require('../src/components/UI').default;
-        const actionsModule = require('../src/controllers/Actions');
+        const uiModule = require('../src/components/UI.js').default;
+        const actionsModule = require('../src/controllers/Actions.js');
 
         expect(uiModule).toHaveBeenCalled();
         expect(uiModule.showTodos).toHaveBeenCalled();

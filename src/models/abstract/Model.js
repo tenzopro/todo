@@ -1,5 +1,5 @@
-import Store from './data/Store';
-import { mergeObjs } from '../../lib/Utils'
+import Store from './data/Store.js';
+import { mergeObjs } from '../../lib/Utils.js';
 
 /**
  * Handles all CRUD tasks
@@ -52,7 +52,12 @@ export default class Model
 
     editTitle(id, newTitleText) 
     {
-        let todo = this.todos.filter(item => item.id == id );
+        const todo = this.todos.filter(item => item.id == id );
+
+        if(todo.length === 0) {
+            return;
+        }
+
         todo[0].title = newTitleText;
         this.updateStore(todo);
     }
@@ -66,7 +71,12 @@ export default class Model
 
     toggleCompleted(id)
     {
-        let todo = this.todos.filter(item => item.id == id );
+        const todo = this.todos.filter(item => item.id == id );
+
+        if(todo.length === 0) {
+            return;
+        }
+
         todo[0].completed = !todo[0].completed;
         this.updateStore(todo);
     }

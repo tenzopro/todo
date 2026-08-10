@@ -1,19 +1,12 @@
-html,
-body,
-div,
-section,
-p,
-ul,
-ol {
+html, body, div, section, p, ul, ol {
   margin: 0;
   padding: 0;
 }
 
-/* This CSS will print because %message-shared is extended. */
 .warning, .error, .success, .message {
+  color: #333;
   border: 1px solid #ccc;
   padding: 10px;
-  color: #333;
 }
 
 .success {
@@ -25,121 +18,137 @@ ol {
 }
 
 .warning {
-  border-color: yellow;
+  border-color: #ff0;
 }
 
 body #container {
-  width: 400px !important;
   padding: 20px;
+  width: 400px !important;
   margin: 0 auto !important;
 }
+
 body #container #content {
   width: 100%;
   padding: 10px;
 }
+
 body #container #content header {
   text-align: center;
   margin-bottom: 20px;
 }
+
 body #container #content header h1 {
-  font-size: 0.9em;
-  font-weight: 500;
   letter-spacing: 1px;
+  font-size: .9em;
+  font-weight: 500;
 }
+
 body #container #content header h1, body #container #content header img {
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
+
 body #container #content #display-alerts {
   margin-bottom: 20px;
 }
+
 body #container #content #display-alerts ul {
-  padding: 15px;
   background-color: #ffe6ea;
-  border-left: 6px solid #ffc0cb;
+  border-left: 6px solid pink;
+  padding: 15px;
 }
+
 body #container #content #display-alerts ul li {
   margin-left: 15px;
 }
+
 body #container #content #form {
-  padding: 0 10px 0 0 !important;
   margin-bottom: 20px;
+  padding: 0 10px 0 0 !important;
 }
+
 body #container #content #form small {
-  font-size: 0.5em;
-  font-weight: bold;
   text-transform: uppercase;
   color: #bfbfbf;
+  font-size: .5em;
+  font-weight: bold;
 }
+
 body #container #content #form input#new-todo {
   width: 100%;
+  margin: 0 auto;
   padding: 3px 3px 3px 5px;
   font-size: 1.5em;
-  margin-bottom: 20px;
-  margin: 0 auto;
 }
+
 body #container #content div#app {
   margin-bottom: 20px;
 }
+
 body #container #content div#app #list-items {
-  width: 100% !important;
-  margin: 0 auto;
   border-collapse: collapse;
+  margin: 0 auto;
+  width: 100% !important;
 }
+
 body #container #content div#app #list-items .true {
   text-decoration: line-through;
 }
+
 body #container #content div#app #list-items tr {
-  width: 100%;
   background-color: #f2f2f2;
-  border-bottom: 4px solid white !important;
+  width: 100%;
+  border-bottom: 4px solid #fff !important;
 }
+
 body #container #content div#app #list-items tr td {
   padding: 5px;
 }
+
 body #container #content div#app #list-items tr td input {
   padding: 3px;
 }
+
 body #container #content div#app #list-items tr td span {
   text-align: left;
 }
+
 body #container #content div#app #list-items tr td button {
-  border: none;
   float: right;
-  background: #f2f2f2;
-  font-weight: bold;
   color: #bfbfbf;
+  background: #f2f2f2;
+  border: none;
+  font-weight: bold;
 }
+
 body #container #content div#app #list-items tr td button:hover {
   cursor: pointer;
 }
+
 body #container #content footer {
-  display: flex;
-  flex-direction: row;
   border-top: 1px solid #f2f2f2;
+  flex-direction: row;
   padding-top: 5px;
+  display: flex;
 }
+
 body #container #content footer #all-checkbox small {
-  font-size: 0.5em;
-  font-weight: bold;
   text-transform: uppercase;
+  font-size: .5em;
+  font-weight: bold;
 }
+
 body #container #content footer #instruction {
   padding-left: 20px;
 }
-body #container #content footer #instruction small {
-  font-size: 0.5em;
-  font-weight: bold;
+
+body #container #content footer #instruction small, body #container #content footer #item-count small {
   text-transform: uppercase;
-}
-body #container #content footer #item-count small {
-  font-size: 0.5em;
+  font-size: .5em;
   font-weight: bold;
-  text-transform: uppercase;
 }
 
 body {
   font: 100% Helvetica, sans-serif;
 }
-
-/*# sourceMappingURL=/base.4fb79adc.css.map */
+/*# sourceMappingURL=todoapp.456f8b4a.css.map */

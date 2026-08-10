@@ -1,12 +1,12 @@
 const Store = (function() {
 
-    const db =  JSON.parse(localStorage.getItem("_todos")); 
-
     const getTodos = () => {
-        
+        const db = JSON.parse(localStorage.getItem("_todos"));
+
         if(anyData(db)==false) 
         {
             dbInit();
+            return JSON.parse(localStorage.getItem("_todos"));
         } 
         return db;
     };

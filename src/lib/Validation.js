@@ -1,4 +1,4 @@
-import Errors from './Errors';
+import Errors from './Errors.js';
 
 /**
  * NOTE: class subject to extention as theres 

@@ -6,8 +6,9 @@ describe('Errors', () => {
     });
 
     test('initializes an empty error collection', () => {
+        expect(typeof Errors.errors).toBe('object');
+        expect(Array.isArray(Errors.errors)).toBe(true);
         expect(Errors.get()).toEqual([]);
-        expect(Errors.errors).toEqual([]);
     });
 
     test('stores a single error message', () => {
@@ -21,7 +22,10 @@ describe('Errors', () => {
         Errors.set('error message one');
         Errors.set('error message two');
 
-        expect(Errors.get()).toEqual(['error message one', 'error message two']);
+        expect(Errors.get()).toEqual([
+            'error message one',
+            'error message two'
+        ]);
         expect(Errors.errors).toHaveLength(2);
     });
 });
